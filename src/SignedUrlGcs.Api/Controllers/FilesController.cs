@@ -26,15 +26,16 @@ public class FilesController : ControllerBase
     }
 
     /// <summary>Lista objetos por prefixo (POC).</summary>
-    [HttpGet("list")]
-    public ActionResult<IEnumerable<string>> List([FromQuery] string? prefix = "uploads/", [FromQuery] int pageSize = 50)
+    [HttpGet()]
+    public ActionResult<IEnumerable<string>> List([FromQuery] string? prefix = "uploads/")
     {
         var results = new List<string>();
+
         foreach (var obj in _storage.ListObjects(_bucket, prefix))
         {
             results.Add(obj.Name);
-            if (results.Count >= pageSize) break;
         }
+
         return Ok(results);
     }
 
@@ -61,10 +62,13 @@ public class FilesController : ControllerBase
         if (string.IsNullOrWhiteSpace(objectName)) return BadRequest("objectName requerido.");
 
         var obj = await _storage.GetObjectAsync(_bucket, objectName);
+       
         Response.Headers[HeaderNames.ContentType] = obj.ContentType ?? "application/octet-stream";
+        
         Response.Headers[HeaderNames.ContentDisposition] = $"attachment; filename='{Path.GetFileName(objectName)}'";
 
         await _storage.DownloadObjectAsync(_bucket, objectName, Response.Body);
+        
         return new EmptyResult();
     }
 }

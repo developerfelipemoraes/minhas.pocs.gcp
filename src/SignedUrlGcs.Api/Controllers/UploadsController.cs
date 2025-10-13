@@ -23,13 +23,13 @@ public class UploadsController : ControllerBase
     /// Gera Signed URL V4 para iniciar sessão de upload resumable (x-goog-resumable:start).
     /// </summary>
     [HttpPost()]
-    public async Task<ActionResult<CreateSignedUrlResponse>> CreateSignedResumable([FromBody] CreateSignedUrlRequest req)
+    public async Task<ActionResult<CreateSignedUrlResponse>> Post([FromBody] CreateSignedUrlRequest req)
     {
         var objectName = string.IsNullOrWhiteSpace(req.ObjectName)
             ? $"uploads/{DateTimeOffset.UtcNow:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.bin"
             : req.ObjectName.Trim();
 
-        var ttl = TimeSpan.FromMinutes (1);
+        var ttl = TimeSpan.FromHours (5);
 
         var template = UrlSigner.RequestTemplate
             .FromBucket(_bucket)

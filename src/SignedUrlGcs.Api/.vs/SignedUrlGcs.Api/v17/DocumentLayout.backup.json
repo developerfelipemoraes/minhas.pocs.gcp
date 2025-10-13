@@ -1,25 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\",
+  "WorkspaceRootPath": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\downloads\\gcssignedurlspapoc\\src\\signedurlgcs.api\\controllers\\uploadscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:controllers\\uploadscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\downloads\\gcssignedurlspapoc\\src\\signedurlgcs.api\\models\\dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:models\\dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\downloads\\gcssignedurlspapoc\\src\\signedurlgcs.api\\controllers\\filescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\source\\repos\\poc\\gcssignedurlspapoc\\src\\signedurlgcs.api\\controllers\\filescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:controllers\\filescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\downloads\\gcssignedurlspapoc\\src\\signedurlgcs.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\source\\repos\\poc\\gcssignedurlspapoc\\src\\signedurlgcs.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\downloads\\gcssignedurlspapoc\\src\\signedurlgcs.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\source\\repos\\poc\\gcssignedurlspapoc\\src\\signedurlgcs.api\\gcs-signer.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:gcs-signer.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\source\\repos\\poc\\gcssignedurlspapoc\\src\\signedurlgcs.api\\controllers\\uploadscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:controllers\\uploadscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\source\\repos\\poc\\gcssignedurlspapoc\\src\\signedurlgcs.api\\models\\dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:models\\dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|c:\\users\\felipe\\source\\repos\\poc\\gcssignedurlspapoc\\src\\signedurlgcs.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}|SignedUrlGcs.Api.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
@@ -30,15 +34,28 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
+              "Title": "gcs-signer.json",
+              "DocumentMoniker": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\gcs-signer.json",
+              "RelativeDocumentMoniker": "gcs-signer.json",
+              "ToolTip": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\gcs-signer.json",
+              "RelativeToolTip": "gcs-signer.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-10T16:20:33.72Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Program.cs",
+              "ToolTip": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Program.cs",
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -47,52 +64,50 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Properties\\launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "Properties\\launchSettings.json",
-              "ToolTip": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Properties\\launchSettings.json",
               "RelativeToolTip": "Properties\\launchSettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-10-09T18:35:20.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-09T18:35:20.099Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Dtos.cs",
-              "DocumentMoniker": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Models\\Dtos.cs",
+              "DocumentMoniker": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Models\\Dtos.cs",
               "RelativeDocumentMoniker": "Models\\Dtos.cs",
-              "ToolTip": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Models\\Dtos.cs",
+              "ToolTip": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Models\\Dtos.cs",
               "RelativeToolTip": "Models\\Dtos.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAUAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-09T17:58:23.551Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-09T17:58:23.551Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "UploadsController.cs",
-              "DocumentMoniker": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\UploadsController.cs",
+              "DocumentMoniker": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\UploadsController.cs",
               "RelativeDocumentMoniker": "Controllers\\UploadsController.cs",
-              "ToolTip": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\UploadsController.cs",
+              "ToolTip": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\UploadsController.cs",
               "RelativeToolTip": "Controllers\\UploadsController.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAgwCIAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-08T22:27:32.134Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "FilesController.cs",
-              "DocumentMoniker": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\FilesController.cs",
+              "DocumentMoniker": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\FilesController.cs",
               "RelativeDocumentMoniker": "Controllers\\FilesController.cs",
-              "ToolTip": "C:\\Users\\Felipe\\Downloads\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\FilesController.cs",
+              "ToolTip": "C:\\Users\\Felipe\\source\\repos\\poc\\GcsSignedUrlSpaPoC\\src\\SignedUrlGcs.Api\\Controllers\\FilesController.cs",
               "RelativeToolTip": "Controllers\\FilesController.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAjwDQAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAWwDQAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-08T22:27:04.035Z",
               "EditorCaption": ""
