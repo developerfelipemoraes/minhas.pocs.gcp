@@ -5,8 +5,6 @@ VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignedUrlGcs.Api", "SignedUrlGcs.Api.csproj", "{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUploader", "..\TestUploader\TestUploader.csproj", "{ED557EC0-72EB-D29B-B393-07AC369FF0F6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4D2BECC-4653-23DA-42B2-6F28F7C9C8BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED557EC0-72EB-D29B-B393-07AC369FF0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED557EC0-72EB-D29B-B393-07AC369FF0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED557EC0-72EB-D29B-B393-07AC369FF0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED557EC0-72EB-D29B-B393-07AC369FF0F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

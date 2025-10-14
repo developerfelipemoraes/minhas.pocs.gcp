@@ -106,115 +106,19 @@ static async Task RunsDownloadAsync(SettingsDownload settingsDownload)
 
     foreach (var file in filesBucket)
     {
-        await DownloadAsync(
+        await BenchmarkDownloadsAsync(
             apiBase: settingsDownload.ApiBase,
             objectName: file,
             token: null,    
-            outputPath: Environment.CurrentDirectory
+            outputPath: Environment.CurrentDirectory,
+            runs: 10,
+            concurrency: 1,                              // aumente para medir paralelismo
+            deleteAfter: true
         );
 
     }
-    //{
-    //    Console.WriteLine($"\n=== Upload - tamanho {sizeMiB} MiB ({s.FilesPerSize} arquivos) ===");
-
-    //    var objectsThisSize = new List<(string obj, long bytes, double ms, double mbps)>();
-    //    var tasks = new List<Task>();
-    //    var locker = new object();
-
-    //    for (int i = 1; i <= s.FilesPerSize; i++)
-    //    {
-    //        var iCopy = i;
-    //        var task = Task.Run(async () =>
-    //        {
-    //            var objectName = $"{s.Prefix}/size-{sizeMiB}MiB/file-{iCopy:D2}-{Guid.NewGuid():N}.bin";
-
-    //            // 1) Pede Signed URL V4 (resumable) ao /api/uploads
-    //            var signed = await RequestSignedUrlAsync(http, s.ApiBase, s.Token, objectName, s.Debug);
-
-    //            // 2) Inicia sessão resumable no GCS
-    //            var sessionUri = await InitiateResumableAsync(http, signed.Url, sizeMiB, s.ContentType, s.Debug);
-
-    //            // 3) Upload em 1 único chunk (PUT com Content-Range)
-    //            var (elapsedMs, mbps) = await UploadSingleChunkAsync(http, sessionUri, sizeMiB, s.ContentType, s.Debug);
-
-    //            lock (locker)
-    //            {
-    //                objectsThisSize.Add((objectName, (long)sizeMiB * 1024 * 1024, elapsedMs, mbps));
-    //                uploaded.Add((objectName, sizeMiB));
-    //            }
-    //            Console.WriteLine($"UP ✓ {objectName}  {sizeMiB}MiB  {mbps:F2} Mb/s  ({elapsedMs:F0} ms)");
-    //        });
-
-    //        tasks.Add(task);
-    //        if (s.Concurrency <= 1)
-    //            await task; // sequencial
-    //        else if (tasks.Count >= s.Concurrency)
-    //        {
-    //            await Task.WhenAll(tasks);
-    //            tasks.Clear();
-    //        }
-    //    }
-    //    if (tasks.Count > 0) await Task.WhenAll(tasks);
-
-    //    // Estatística simples por tamanho
-    //    var avgMbps = objectsThisSize.Count > 0 ? objectsThisSize.Average(o => o.mbps) : 0;
-
-    //    var p95 = Percentile(objectsThisSize.Select(o => o.ms).ToArray(), 0.95);
-
-    //    summaryUpload.Add((sizeMiB, objectsThisSize.Count, avgMbps, p95));
-
-    //    Console.WriteLine($"-- Upload resumo {sizeMiB}MiB: média {avgMbps:F2} Mb/s  p95 {p95:F0} ms");
-
-    //    if (s.Debug)
-    //    {
-    //        Console.Write("Pausar antes do próximo tamanho? (s/N): ");
-    //        if (ReadBoolDefaultNo(Console.ReadLine()))
-    //            Console.Write("ENTER para continuar..."); Console.ReadLine();
-    //    }
-    //}
-
-    //// (Opcional) Downloads via endpoint de leitura
-    //if (!string.IsNullOrWhiteSpace(s.DownloadBase) && s.VerifyDownload)
-    //{
-    //    Console.WriteLine("\n### Iniciando testes de DOWNLOAD ###");
-    //    var summaryDownload = new List<(int sizeMiB, int files, double avgMbps, double p95Ms)>();
-
-    //    foreach (var group in uploaded.GroupBy(x => x.sizeMiB).OrderBy(g => g.Key))
-    //    {
-    //        var sizeMiB = group.Key;
-    //        var files = group.ToList();
-    //        var results = new List<(double ms, double mbps)>();
-
-    //        foreach (var f in files)
-    //        {
-    //            var url = $"{s.DownloadBase!.TrimEnd('/')}/{Uri.EscapeDataString(f.objectName)}?bucket={Uri.EscapeDataString(s.Bucket ?? "filesmanager")}";
-    //            var (ms, mbps) = await DownloadMeasureAsync(CreateHttpClient(), url, s.Debug); // client novo p/ aproximar mundo real
-    //            results.Add((ms, mbps));
-    //            Console.WriteLine($"DL ✓ {f.objectName}  {sizeMiB}MiB  {mbps:F2} Mb/s  ({ms:F0} ms)");
-    //        }
-
-    //        var avg = results.Count > 0 ? results.Average(r => r.mbps) : 0;
-    //        var p95 = Percentile(results.Select(r => r.ms).ToArray(), 0.95);
-    //        summaryDownload.Add((sizeMiB, results.Count, avg, p95));
-    //        Console.WriteLine($"-- Download resumo {sizeMiB}MiB: média {avg:F2} Mb/s  p95 {p95:F0} ms");
-    //    }
-
-    //    Console.WriteLine("\n===== SUMÁRIO FINAL =====");
-    //    Console.WriteLine("UPLOAD");
-    //    foreach (var s1 in summaryUpload.OrderBy(su => su.sizeMiB))
-    //        Console.WriteLine($"  {s1.sizeMiB,3} MiB: {s1.files,2} arquivos | avg {s1.avgMbps:F2} Mb/s | p95 {s1.p95Ms:F0} ms");
-
-    //    Console.WriteLine("\nDOWNLOAD");
-    //    foreach (var s2 in summaryDownload.OrderBy(sd => sd.sizeMiB))
-    //        Console.WriteLine($"  {s2.sizeMiB,3} MiB: {s2.files,2} arquivos | avg {s2.avgMbps:F2} Mb/s | p95 {s2.p95Ms:F0} ms");
-    //}
-    //else
-    //{
-    //    Console.WriteLine("\n(downloads pulados — use --download-base para medir também o caminho de leitura)");
-    //    Console.WriteLine("\n===== SUMÁRIO FINAL (UPLOAD) =====");
-    //    foreach (var s1 in summaryUpload.OrderBy(su => su.sizeMiB))
-    //        Console.WriteLine($"  {s1.sizeMiB,3} MiB: {s1.files,2} arquivos | avg {s1.avgMbps:F2} Mb/s | p95 {s1.p95Ms:F0} ms");
-    //}
+    
+    Console.ReadLine();
 }
 
 /** ********/
@@ -249,7 +153,7 @@ static async Task RunAsync(Settings s)
             var iCopy = i;
             var task = Task.Run(async () =>
             {
-                var objectName = $"{s.Prefix}/size-{sizeMiB}MiB/file-{iCopy:D2}-{Guid.NewGuid():N}.bin";
+                var objectName = $"{s.Prefix}/file-{iCopy:D2}-{Guid.NewGuid():N}.bin";
 
                 // 1) Pede Signed URL V4 (resumable) ao /api/uploads
                 var signed = await RequestSignedUrlAsync(http, s.ApiBase, s.Token, objectName, s.Debug);
@@ -340,44 +244,144 @@ static async Task RunAsync(Settings s)
     }
 }
 
-static async Task DownloadAsync(string apiBase, string objectName, string? token, string outputPath)
+
+static async Task<DownloadResult> DownloadMeasuredAsync(HttpClient http, string apiBase, string objectName, string? token, string outputPath, int runIndex)
 {
-    using var http = new HttpClient();
     if (!string.IsNullOrWhiteSpace(token))
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-    var url = $"{apiBase.TrimEnd('/')}/api/files/proxy?objectName={Uri.EscapeDataString(objectName)}";
+    Directory.CreateDirectory(outputPath);
+
+    var url = $"{apiBase.TrimEnd('/')}/files/proxy?objectName={Uri.EscapeDataString(objectName)}";
+
+    var swTotal = Stopwatch.StartNew();
+
+    var swHeaders = Stopwatch.StartNew();
+
     using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
     resp.EnsureSuccessStatusCode();
 
-    // tenta pegar o nome do servidor; fallback = nome do objeto
+    swHeaders.Stop(); // tempo até os headers (TTFB aproximado)
+
+    // nome do arquivo (p/ evitar overwrite, adiciono sufixo do run)
     var cd = resp.Content.Headers.ContentDisposition;
-    var fileName = cd?.FileNameStar ?? cd?.FileName?.Trim('"') ?? Path.GetFileName(objectName);
-    var dest = Path.Combine(outputPath, fileName);
+    
+    var baseName = cd?.FileNameStar ?? cd?.FileName?.Trim('"') ?? Path.GetFileName(objectName);
+  
+    var name = Path.GetFileNameWithoutExtension(baseName);
+    
+    var ext = Path.GetExtension(baseName);
+    
+    var dest = Path.Combine(outputPath, $"{name}.run{runIndex}{ext}");
 
     using var input = await resp.Content.ReadAsStreamAsync();
+    
     using var output = System.IO.File.Create(dest);
+
+    var swBody = Stopwatch.StartNew();
 
     var buffer = new byte[128 * 1024];
     long totalRead = 0;
-    var len = resp.Content.Headers.ContentLength;
+    
     int read;
-
+    
     while ((read = await input.ReadAsync(buffer)) > 0)
     {
         await output.WriteAsync(buffer.AsMemory(0, read));
         totalRead += read;
-        if (len.HasValue)
-        {
-            Console.Write($"\rBaixado {totalRead:n0}/{len:n0} bytes ({(totalRead * 100.0 / len.Value):0.0}%)");
-        }
-        else
-        {
-            Console.Write($"\rBaixado {totalRead:n0} bytes");
-        }
     }
 
-    Console.WriteLine($"\nOK: {dest}");
+    swBody.Stop();
+    
+    swTotal.Stop();
+
+    double seconds = swTotal.Elapsed.TotalSeconds;
+    
+    double mibps = seconds > 0 ? (totalRead / (1024.0 * 1024.0)) / seconds : 0.0;
+
+    return new DownloadResult(
+        Bytes: totalRead,
+        HeadersMs: swHeaders.Elapsed.TotalMilliseconds,
+        BodyMs: swBody.Elapsed.TotalMilliseconds,
+        TotalMs: swTotal.Elapsed.TotalMilliseconds,
+        MiBps: mibps,
+        Dest: dest
+    );
+}
+
+static double Percentile(IReadOnlyList<double> xs, double p)
+{
+    if (xs.Count == 0) return double.NaN;
+    var arr = xs.OrderBy(v => v).ToArray();
+    double idx = (arr.Length - 1) * p;
+    int lo = (int)Math.Floor(idx);
+    int hi = (int)Math.Ceiling(idx);
+    if (lo == hi) return arr[lo];
+    return arr[lo] + (arr[hi] - arr[lo]) * (idx - lo);
+}
+
+static async Task BenchmarkDownloadsAsync(
+    string apiBase, 
+    string objectName, 
+    string? token, 
+    string outputPath,
+    int runs = 5, 
+    int concurrency = 1, 
+    bool deleteAfter = false)
+{
+    using var handler = new SocketsHttpHandler { MaxConnectionsPerServer = Math.Max(2, concurrency) };
+    using var http = new HttpClient(handler);
+
+    // Warm-up (opcional): 1 execução para “esquentar” DNS/TLS e JIT
+    _ = await DownloadMeasuredAsync(http, apiBase, objectName, token, outputPath, -1);
+
+    var results = new List<DownloadResult>(runs);
+    var swBatch = Stopwatch.StartNew();
+
+    for (int i = 0; i < runs; i += concurrency)
+    {
+        var batch = new List<Task<DownloadResult>>(concurrency);
+        for (int j = 0; j < concurrency && (i + j) < runs; j++)
+            batch.Add(DownloadMeasuredAsync(http, apiBase, objectName, token, outputPath, i + j));
+
+        var done = await Task.WhenAll(batch);
+        results.AddRange(done);
+    }
+
+    swBatch.Stop();
+
+    // Estatísticas
+    var totalMs = results.Select(r => r.TotalMs).ToList();
+    var bodyMs = results.Select(r => r.BodyMs).ToList();
+    var headersMs = results.Select(r => r.HeadersMs).ToList();
+    var mibps = results.Select(r => r.MiBps).ToList();
+    long bytes = results.First().Bytes;
+
+    double Avg(List<double> v) => v.Average();
+    double P50(List<double> v) => Percentile(v, 0.50);
+    double P90(List<double> v) => Percentile(v, 0.90);
+
+    Console.WriteLine("\n=== Download Benchmark ===");
+    Console.WriteLine($"Arquivo: {objectName}  (~{bytes / (1024.0 * 1024.0):0.00} MiB)");
+    Console.WriteLine($"Runs: {runs} | Concorrência: {concurrency}");
+    Console.WriteLine($"Tempo total do lote: {swBatch.Elapsed.TotalSeconds:0.000}s\n");
+
+    Console.WriteLine("Tempo até headers (ms): " +
+        $"avg {Avg(headersMs):0.0}, p50 {P50(headersMs):0.0}, p90 {P90(headersMs):0.0}");
+    Console.WriteLine("Tempo de corpo (ms):    " +
+        $"avg {Avg(bodyMs):0.0}, p50 {P50(bodyMs):0.0}, p90 {P90(bodyMs):0.0}");
+    Console.WriteLine("Tempo total (ms):       " +
+        $"avg {Avg(totalMs):0.0}, p50 {P50(totalMs):0.0}, p90 {P90(totalMs):0.0}");
+    Console.WriteLine("Throughput (MiB/s):     " +
+        $"avg {Avg(mibps):0.00}, p50 {P50(mibps):0.00}, p90 {P90(mibps):0.00}");
+
+    if (deleteAfter)
+    {
+        foreach (var r in results)
+        {
+            System.IO.File.Delete(r.Dest);
+        }
+    }
 }
 
 
@@ -488,7 +492,7 @@ static async Task<List<string>> RequestListObjectsBucket(
     HttpClient http, string apiBase, string? token, string objectName, bool debug)
 {
 
-    var url =$"{apiBase.TrimEnd('/')}/list?prefix={WebUtility.UrlEncode(objectName)}&pageSize=50";
+    var url =$"{apiBase.TrimEnd('/')}/files?prefix={WebUtility.UrlEncode(objectName)}";
 
     using var req = new HttpRequestMessage(HttpMethod.Get, url);
 
@@ -597,7 +601,7 @@ static byte[] GetBuffer(int sizeMiB)
     return bytes;
 }
 
-static double Percentile(double[] values, double p)
+static double PercentileDownload(double[] values, double p)
 {
     if (values.Length == 0) return 0;
     Array.Sort(values);
@@ -798,3 +802,5 @@ record SettingsDownload(
     string? Prefix, 
     bool Debug = true
 );
+
+record DownloadResult(long Bytes, double HeadersMs, double BodyMs, double TotalMs, double MiBps, string Dest);
