@@ -1,0 +1,62 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.QualityTools.Testing.Fakes;              // Fakes
+using Moq;
+using Xunit;
+
+// seus namespaces reais:
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages;
+// fakes gerados para o assembly onde estão as classes acima:
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages.Fakes;
+
+public class GoogleCloudStorageManageServiceFacadeTests
+{
+    [Fact]
+    public async Task CreateSignedDownloadUrlAsync_facade_deve_retornar_o_esperado()
+    {
+        // Arrange: provider e detector
+        var sp = new Mock<IServiceProvider>(MockBehavior.Strict);
+        sp.Setup(s => s.GetService(typeof(IHttpClientFactory)))
+          .Returns(Mock.Of<IHttpClientFactory>());
+
+        var detect = new Mock<IDetectClientGoogleCloudStorageConfiguration>(MockBehavior.Strict);
+        detect.SetupGet(d => d.GoogleCloudStorageOptions)
+              .Returns(new GoogleCloudStorageOptions { Bucket = "bucket-test", DefaultTtlMinutes = 15 });
+
+        var req = new GcsSignedRequest { ObjectName = "folder/file.txt" };
+        var expected = new SignedGoogleCloudStorageResponse
+        {
+            Url = new Uri("https://example/signed"),
+            ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(10)
+        };
+
+        using (ShimsContext.Create())
+        {
+            // 1) Evitar dependências reais das fábricas estáticas
+            ShimGoogleCloudStorageAuthFactory.CreateGoogleCredentialGoogleCloudStorageOptions = _ => null!;
+            ShimGoogleCloudStorageAuthFactory.CreateStorageClientGoogleCredential            = _ => null!;
+            ShimGoogleCloudStorageAuthFactory.CreateUrlSignerGoogleCredential               = _ => null!;
+
+            // 2) Neutralizar o construtor do serviço interno
+            //    (ajuste a assinatura conforme a gerada pelo Fakes)
+            ShimGoogleCloudStorageService.ConstructorGoogleCloudStorageOptionsUrlSignerStorageClientILoggerOfGoogleCloudStorageServiceIHttpClientFactory =
+                (svc, opt, signer, client, logger, httpFactory) => { /* no-op */ };
+
+            // 3) Forçar os métodos do serviço interno a retornarem o que o teste precisa
+            ShimGoogleCloudStorageService.AllInstances
+                .CreateSignedDownloadUrlAsyncGcsSignedRequestCancellationToken =
+                    (svc, r, ct) => Task.FromResult(expected);
+
+            // Act: instância real da implementação, mas chamando via a FACADE
+            var impl   = new GoogleCloudStorageManageService(sp.Object, detect.Object);
+            IGoogleCloudStorageManageService facade = impl;
+
+            var result = await facade.CreateSignedDownloadUrlAsync(req, CancellationToken.None);
+
+            // Assert
+            Assert.Equal(expected.Url, result.Url);
+            Assert.Equal(expected.ExpiresAt, result.ExpiresAt);
+        }
+    }
+}
