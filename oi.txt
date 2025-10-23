@@ -71,3 +71,92 @@ public async Task MinhaClasse_UsaAuth_MasTudoMocado()
 
     Assert.NotNull(url);
 }
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Storage.v1;
+using Google.Apis.Storage.v1.Data;
+using Google.Cloud.Storage.V1;
+using Moq;
+
+namespace CarePlus.Infra.Service.Client.Unit.Tests
+{
+    public static class AuthConfigMocks
+    {
+        public static (Mock<IGoogleCloudStorageAuthConfiguration> Auth,
+                       Mock<StorageClient> Storage,
+                       UrlSigner Signer,
+                       GoogleCredential Credential) Build()
+        {
+            // Credencial fake (não chama rede)
+            var fakeCred = GoogleCredential.FromAccessToken("unit-test-token");
+
+            // StorageClient mockando apenas o que seu código usa
+            var storage = new Mock<StorageClient>(MockBehavior.Strict);
+
+            storage
+                .Setup(s => s.GetObjectAsync(
+                    "bucket-teste",
+                    "arquivo.txt",
+                    It.IsAny<GetObjectOptions>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Object
+                {
+                    Name = "arquivo.txt",
+                    ContentType = "text/plain"
+                });
+
+            storage
+                .Setup(s => s.DownloadObjectAsync(
+                    "bucket-teste",
+                    "arquivo.txt",
+                    It.IsAny<Stream>(),
+                    It.IsAny<DownloadObjectOptions>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // UrlSigner offline (RSA em memória, sem rede)
+            var signer = CreateTestUrlSigner();
+
+            // Mock da sua “fábrica”/config
+            var auth = new Mock<IGoogleCloudStorageAuthConfiguration>(MockBehavior.Strict);
+
+            auth.Setup(a => a.CreateGoogleCredential(It.IsAny<GoogleCloudStorageOptions>()))
+                .Returns(fakeCred);
+
+            auth.Setup(a => a.CreateStorageClient(It.IsAny<GoogleCredential>()))
+                .Returns(storage.Object);
+
+            auth.Setup(a => a.CreateUrlSigner(It.IsAny<GoogleCredential>()))
+                .Returns(signer);
+
+            return (auth, storage, signer, fakeCred);
+        }
+
+        // --- Helpers ---
+
+        private static UrlSigner CreateTestUrlSigner()
+        {
+            var email = "sa-test@local.iam.gserviceaccount.com";
+            using var rsa = RSA.Create(2048);
+            var pkcs8 = Convert.ToBase64String(rsa.ExportPkcs8PrivateKey());
+            var pem = "-----BEGIN PRIVATE KEY-----\n" + Chunk(pkcs8, 64) + "-----END PRIVATE KEY-----\n";
+
+            var init = new ServiceAccountCredential.Initializer(email).FromPrivateKey(pem);
+            var sa = new ServiceAccountCredential(init);
+            return UrlSigner.FromServiceAccountCredential(sa); // 100% offline
+        }
+
+        private static string Chunk(string s, int size)
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < s.Length; i += size)
+                sb.AppendLine(s.Substring(i, Math.Min(size, s.Length - i)));
+            return sb.ToString();
+        }
+    }
+}
