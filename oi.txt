@@ -1,24 +1,85 @@
-[Fact]
-public async Task CreateSignedDownloadUrl_Deve_Conter_Bucket_E_Object()
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
+
+// AJUSTE os namespaces conforme seu projeto:
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages.Interface; // IGoogleCloudStorageManageService
+using CarePlus.Infra.Service.Client.GoogleCloudStorageApp;               // GoogleCloudStorageServiceCollectionExtensions (onde está o método)
+
+public class GoogleCloudStorageServiceCollectionExtensionsTest
 {
-    var facadeMock = new Mock<IGoogleCloudStorageManageService>(MockBehavior.Strict);
+    private static IConfiguration BuildConfig()
+    {
+        // Preenche a seção que seu extension lê (ex.: "googleCloudStorage")
+        // Use chaves que existam no seu Options; se não souber, só crie a seção vazia.
+        var dict = new Dictionary<string, string?>
+        {
+            ["googleCloudStorage:DefaultTimeoutInMinutes"] = "1" // se houver validação > 0
+        };
+        return new ConfigurationBuilder()
+            .AddInMemoryCollection(dict)
+            .Build();
+    }
 
-    facadeMock
-      .Setup(m => m.CreateSignedDownloadUrlAsync(
-          It.IsAny<GcsSignedRequest>(),
-          It.IsAny<CancellationToken>()))
-      .ReturnsAsync(new SignedGoogleCloudStorageResponse { Url = "https://signed.example/bucket-teste/arquivo.txt?sig=abc" });
+    [Fact]
+    public void AddGcsInfrastructure_Deve_Registrar_ServicosPrincipais()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();       // geralmente o extension usa logging
+        services.AddHttpClient();    // ok chamar antes, o extension pode chamar também
+        var cfg = BuildConfig();
 
-    var facade = facadeMock.Object;
+        // Act
+        // Se o método for extension: services.AddGcsInfrastructure(cfg);
+        // Se preferir evitar "using" do namespace, pode chamar estático:
+        var returned = GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg);
 
-    var req = new GcsSignedRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt" };
-    var signed = await facade.CreateSignedDownloadUrlAsync(req, CancellationToken.None);
+        // Assert básicos sobre a collection (sem construir provider ainda)
+        Assert.NotNull(returned);
+        Assert.Same(services, returned);
 
-    Assert.NotNull(signed);
-    Assert.Contains("bucket-teste", signed.Url);
-    Assert.Contains("arquivo.txt", signed.Url);
+        // Confere se registrou a fachada
+        Assert.Contains(services, d => d.ServiceType == typeof(IGoogleCloudStorageManageService));
 
-    facadeMock.Verify(m => m.CreateSignedDownloadUrlAsync(
-        It.Is<GcsSignedRequest>(r => r.Bucket == "bucket-teste" && r.ObjectName == "arquivo.txt"),
-        It.IsAny<CancellationToken>()), Times.Once);
+        // Confere que HttpClientFactory estará disponível
+        Assert.Contains(services, d => d.ServiceType == typeof(IHttpClientFactory)
+                                     || d.ImplementationType?.Name?.Contains("DefaultHttpClientFactory") == true);
+    }
+
+    [Fact]
+    public void AddGcsInfrastructure_Deve_Permitir_Resolver_Depedencias()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var cfg = BuildConfig();
+
+        // Act
+        GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg);
+        using var sp = services.BuildServiceProvider();
+
+        // Assert: conseguir resolver IHttpClientFactory e a fachada (se o ctor não exigir nada externo)
+        var httpFactory = sp.GetService<IHttpClientFactory>();
+        Assert.NotNull(httpFactory);
+
+        // OBS: se o ctor da fachada instanciar clientes Google, evite resolvê-la aqui.
+        // Caso possa resolver sem side-effects, mantenha:
+        var facade = sp.GetService<IGoogleCloudStorageManageService>();
+        Assert.NotNull(facade);
+    }
+
+    [Fact]
+    public void AddGcsInfrastructure_Pode_Ser_Chamado_Mais_De_Uma_Vez_Sem_Excecao()
+    {
+        var services = new ServiceCollection();
+        var cfg = BuildConfig();
+
+        GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg);
+        GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg); // idempotência “prática”
+
+        // Não deve lançar exceção; e deve manter ao menos um registro da fachada
+        Assert.Contains(services, d => d.ServiceType == typeof(IGoogleCloudStorageManageService));
+    }
 }
