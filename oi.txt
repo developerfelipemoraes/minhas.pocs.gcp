@@ -160,3 +160,103 @@ namespace CarePlus.Infra.Service.Client.Unit.Tests
         }
     }
 }
+
+
+using System.IO;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
+using Google.Apis.Storage.v1;
+using Google.Cloud.Storage.V1;
+using Xunit;
+
+public class GoogleCloudStorageServiceTests
+{
+    [Fact]
+    public async Task Download_Deve_Chamar_StorageClient_DownloadObjectAsync()
+    {
+        // Arrange
+        var (auth, storage, signer, cred) = AuthConfigMocks.Build();
+
+        // (Opcional) grava conteúdo fake no stream para o teste validar
+        storage.Setup(s => s.DownloadObjectAsync(
+                "bucket-teste",
+                "arquivo.txt",
+                It.IsAny<Stream>(),
+                It.IsAny<DownloadObjectOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<string, string, Stream, DownloadObjectOptions, CancellationToken>((b,o,stream,opts,ct) =>
+            {
+                using var w = new StreamWriter(stream, leaveOpen:true);
+                w.Write("conteudo-fake"); w.Flush();
+                stream.Position = 0;
+            })
+            .Returns(Task.CompletedTask);
+
+        var sut = new GoogleCloudStorageService(
+            auth.Object,                       // sua interface IGoogleCloudStorageAuthConfiguration
+            NullLogger<GoogleCloudStorageService>.Instance
+            /* + quaisquer outros deps do seu construtor */
+        );
+
+        using var ms = new MemoryStream();
+
+        // Act
+        await sut.DownloadAsync("bucket-teste", "arquivo.txt", ms, CancellationToken.None);
+
+        // Assert
+        storage.Verify(s => s.DownloadObjectAsync(
+            "bucket-teste", "arquivo.txt",
+            It.IsAny<Stream>(),
+            It.IsAny<DownloadObjectOptions>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+
+        Encoding.UTF8.GetString(ms.ToArray()).Should().Be("conteudo-fake");
+    }
+}
+[Fact]
+public async Task GetMetadata_Deve_Usar_GetObjectAsync()
+{
+    var (auth, storage, signer, cred) = AuthConfigMocks.Build();
+
+    var sut = new GoogleCloudStorageService(
+        auth.Object,
+        NullLogger<GoogleCloudStorageService>.Instance
+    );
+
+    // Act
+    var obj = await sut.GetMetadataAsync("bucket-teste", "arquivo.txt", CancellationToken.None);
+
+    // Assert
+    obj.Name.Should().Be("arquivo.txt");
+    obj.ContentType.Should().Be("text/plain");
+
+    storage.Verify(s => s.GetObjectAsync(
+        "bucket-teste",
+        "arquivo.txt",
+        It.IsAny<GetObjectOptions>(),
+        It.IsAny<CancellationToken>()), Times.Once);
+}
+
+[Fact]
+public void CreateSignedUrl_Deve_Usar_UrlSigner()
+{
+    var (auth, storage, signer, cred) = AuthConfigMocks.Build();
+    var sut = new GoogleCloudStorageService(
+        auth.Object,
+        NullLogger<GoogleCloudStorageService>.Instance
+    );
+
+    // Act
+    var url = sut.CreateSignedUrl("bucket-teste", "arquivo.txt", HttpMethod.Get, TimeSpan.FromMinutes(15));
+
+    // Assert
+    url.Should().NotBeNullOrWhiteSpace();
+    url.Should().Contain("bucket-teste");
+    url.Should().Contain("arquivo.txt");
+}
+
