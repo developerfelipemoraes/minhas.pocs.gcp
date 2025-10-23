@@ -1,85 +1,186 @@
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Xunit;
 
-// AJUSTE os namespaces conforme seu projeto:
-using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages.Interface; // IGoogleCloudStorageManageService
-using CarePlus.Infra.Service.Client.GoogleCloudStorageApp;               // GoogleCloudStorageServiceCollectionExtensions (onde está o método)
+// AJUSTE: namespaces reais do seu projeto
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages;            // GoogleCloudStorageManageService
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages.Interface;  // IGoogleCloudStorageManageService (se precisar)
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration;      // GoogleCloudStorageOptions
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration.Interface; // IDetectClientGoogleCloudStorageConfiguration
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration.AuthGcp.Interface; // IGoogleCloudStorageAuthConfiguration
+using CarePlus.Infra.Service.Client.GoogleCloudStorage.Models;             // GcsSignedRequest, GcsBucketInfoRequest, StreamResponse, ...
 
-public class GoogleCloudStorageServiceCollectionExtensionsTest
+public class GoogleCloudStorageManageServiceTest
 {
-    private static IConfiguration BuildConfig()
+    // ---------------- helpers ----------------
+
+    private static UrlSigner CreateOfflineSigner()
     {
-        // Preenche a seção que seu extension lê (ex.: "googleCloudStorage")
-        // Use chaves que existam no seu Options; se não souber, só crie a seção vazia.
-        var dict = new Dictionary<string, string?>
+        var email = "sa-test@local.iam.gserviceaccount.com";
+        using var rsa = RSA.Create(2048);
+        var pkcs8 = Convert.ToBase64String(rsa.ExportPkcs8PrivateKey());
+
+        string Pem(string b64)
         {
-            ["googleCloudStorage:DefaultTimeoutInMinutes"] = "1" // se houver validação > 0
-        };
-        return new ConfigurationBuilder()
-            .AddInMemoryCollection(dict)
-            .Build();
+            var sb = new StringBuilder();
+            sb.AppendLine("-----BEGIN PRIVATE KEY-----");
+            for (int i = 0; i < b64.Length; i += 64)
+                sb.AppendLine(b64.Substring(i, Math.Min(64, b64.Length - i)));
+            sb.AppendLine("-----END PRIVATE KEY-----");
+            return sb.ToString();
+        }
+
+        var init = new ServiceAccountCredential.Initializer(email).FromPrivateKey(Pem(pkcs8));
+        var sa = new ServiceAccountCredential(init);
+        return UrlSigner.FromServiceAccountCredential(sa); // 100% offline
+    }
+
+    private sealed class SetupContainer
+    {
+        public Mock<IServiceProvider> ServiceProvider = new(MockBehavior.Strict);
+        public Mock<IHttpClientFactory> HttpFactory = new(MockBehavior.Strict);
+        public Mock<IGoogleCloudStorageAuthConfiguration> Auth = new(MockBehavior.Strict);
+        public Mock<IDetectClientGoogleCloudStorageConfiguration> Detect = new(MockBehavior.Strict);
+        public Mock<StorageClient> Storage = new(MockBehavior.Strict);
+        public GoogleCloudStorageOptions Options = new();
+        public GoogleCredential FakeCredential = GoogleCredential.FromAccessToken("unit-test-token");
+        public UrlSigner Signer = CreateOfflineSigner();
+    }
+
+    private static SetupContainer BuildHappyPath()
+    {
+        var c = new SetupContainer();
+
+        // IHttpClientFactory -> retorna HttpClient “vazio”
+        c.HttpFactory
+            .Setup(f => f.CreateClient(It.IsAny<string>()))
+            .Returns(new System.Net.Http.HttpClient());
+
+        // Detect options
+        c.Detect.SetupGet(d => d.GoogleCloudStorageOptions).Returns(c.Options);
+
+        // Auth factory -> devolve cred, storage e signer offline
+        c.Auth.Setup(a => a.CreateGoogleCredential(It.IsAny<GoogleCloudStorageOptions>()))
+              .Returns(c.FakeCredential);
+        c.Auth.Setup(a => a.CreateStorageClient(It.IsAny<GoogleCredential>()))
+              .Returns(c.Storage.Object);
+        c.Auth.Setup(a => a.CreateUrlSigner(It.IsAny<GoogleCredential>()))
+              .Returns(c.Signer);
+
+        // IServiceProvider.GetService<T>
+        c.ServiceProvider.Setup(sp => sp.GetService(typeof(IHttpClientFactory)))
+                         .Returns(c.HttpFactory.Object);
+        c.ServiceProvider.Setup(sp => sp.GetService(typeof(IGoogleCloudStorageAuthConfiguration)))
+                         .Returns(c.Auth.Object);
+
+        return c;
+    }
+
+    private static GoogleCloudStorageManageService CreateSut(SetupContainer c)
+    {
+        // Construtor da sua classe: (IServiceProvider, IDetectClientGoogleCloudStorageConfiguration)
+        return new GoogleCloudStorageManageService(c.ServiceProvider.Object, c.Detect.Object);
+    }
+
+    // ------------- testes --------------------
+
+    [Fact]
+    public void Ctor_Deve_Lancar_Quando_Options_Nulo()
+    {
+        var c = BuildHappyPath();
+        // força options nulo
+        c.Detect.SetupGet(d => d.GoogleCloudStorageOptions).Returns((GoogleCloudStorageOptions)null);
+
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            _ = new GoogleCloudStorageManageService(c.ServiceProvider.Object, c.Detect.Object);
+        });
     }
 
     [Fact]
-    public void AddGcsInfrastructure_Deve_Registrar_ServicosPrincipais()
+    public async Task CreateSignedDownloadUrl_Deve_Retornar_Url_Com_Bucket_E_Object()
     {
-        // Arrange
-        var services = new ServiceCollection();
-        services.AddLogging();       // geralmente o extension usa logging
-        services.AddHttpClient();    // ok chamar antes, o extension pode chamar também
-        var cfg = BuildConfig();
+        var c = BuildHappyPath();
+
+        // Arrange: StorageClient não é chamado nesse fluxo (URL assinada usa UrlSigner)
+        // apenas criamos SUT
+        var sut = CreateSut(c);
+
+        var req = new GcsSignedRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt", ContentType = "text/plain" };
 
         // Act
-        // Se o método for extension: services.AddGcsInfrastructure(cfg);
-        // Se preferir evitar "using" do namespace, pode chamar estático:
-        var returned = GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg);
+        var resp = await sut.CreateSignedDownloadUrlAsync(req, CancellationToken.None);
 
-        // Assert básicos sobre a collection (sem construir provider ainda)
-        Assert.NotNull(returned);
-        Assert.Same(services, returned);
-
-        // Confere se registrou a fachada
-        Assert.Contains(services, d => d.ServiceType == typeof(IGoogleCloudStorageManageService));
-
-        // Confere que HttpClientFactory estará disponível
-        Assert.Contains(services, d => d.ServiceType == typeof(IHttpClientFactory)
-                                     || d.ImplementationType?.Name?.Contains("DefaultHttpClientFactory") == true);
+        // Assert básico (sem FluentAssertions)
+        Assert.NotNull(resp);
+        var urlProp = resp.GetType().GetProperty("Url");
+        Assert.NotNull(urlProp);
+        var url = (string)urlProp!.GetValue(resp)!;
+        Assert.Contains("bucket-teste", url);
+        Assert.Contains("arquivo.txt", url);
     }
 
     [Fact]
-    public void AddGcsInfrastructure_Deve_Permitir_Resolver_Depedencias()
+    public async Task CreateSignedResumableUploadUrl_Deve_Retornar_Alguma_UrlDeUpload()
     {
-        // Arrange
-        var services = new ServiceCollection();
-        services.AddLogging();
-        var cfg = BuildConfig();
+        var c = BuildHappyPath();
+        var sut = CreateSut(c);
 
-        // Act
-        GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg);
-        using var sp = services.BuildServiceProvider();
+        var req = new GcsSignedRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt", ContentType = "application/octet-stream" };
 
-        // Assert: conseguir resolver IHttpClientFactory e a fachada (se o ctor não exigir nada externo)
-        var httpFactory = sp.GetService<IHttpClientFactory>();
-        Assert.NotNull(httpFactory);
+        var resp = await sut.CreateSignedResumableUploadUrlAsync(req, CancellationToken.None);
 
-        // OBS: se o ctor da fachada instanciar clientes Google, evite resolvê-la aqui.
-        // Caso possa resolver sem side-effects, mantenha:
-        var facade = sp.GetService<IGoogleCloudStorageManageService>();
-        Assert.NotNull(facade);
+        Assert.NotNull(resp);
+        var urlProp = resp.GetType().GetProperty("Url");
+        Assert.NotNull(urlProp);
+        var url = (string)urlProp!.GetValue(resp)!;
+        // como o signer é offline, validamos partes estáveis
+        Assert.Contains("bucket-teste", url);
+        Assert.Contains("arquivo.txt", url);
     }
 
     [Fact]
-    public void AddGcsInfrastructure_Pode_Ser_Chamado_Mais_De_Uma_Vez_Sem_Excecao()
+    public async Task DownloadAsBytes_Deve_Invocar_StorageClient_Download()
     {
-        var services = new ServiceCollection();
-        var cfg = BuildConfig();
+        var c = BuildHappyPath();
+        var sut = CreateSut(c);
 
-        GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg);
-        GoogleCloudStorageServiceCollectionExtensions.AddGcsInfrastructure(services, cfg); // idempotência “prática”
+        // Simula DownloadObjectAsync escrevendo bytes no stream
+        c.Storage
+            .Setup(s => s.DownloadObjectAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<Stream>(),
+                It.IsAny<DownloadObjectOptions?>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<string, string, Stream, DownloadObjectOptions?, CancellationToken>((b, o, stream, opt, ct) =>
+            {
+                using var w = new StreamWriter(stream, leaveOpen: true);
+                w.Write("conteudo-fake");
+                w.Flush();
+                stream.Position = 0;
+            })
+            .Returns(Task.CompletedTask);
 
-        // Não deve lançar exceção; e deve manter ao menos um registro da fachada
-        Assert.Contains(services, d => d.ServiceType == typeof(IGoogleCloudStorageManageService));
+        var req = new GcsBucketInfoRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt" };
+
+        var resp = await sut.DownloadAsBytesAsync(req, CancellationToken.None);
+        Assert.NotNull(resp);
+
+        // Verifica que o StorageClient foi chamado
+        c.Storage.Verify(s => s.DownloadObjectAsync(
+            It.IsAny<string>(),
+            It.IsAny<string>(),
+            It.IsAny<Stream>(),
+            It.IsAny<DownloadObjectOptions?>(),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 }
