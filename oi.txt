@@ -1,193 +1,24 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Google.Apis.Storage.v1.Data;                  // Object
-using Moq;
-
-// ADJUST: namespaces reais do seu projeto
-using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages;
-using CarePlus.Infra.Service.Client.GoogleCloudStorage.Models;
-
-namespace CarePlus.Infra.Service.Client.Unit.Tests
+[Fact]
+public async Task CreateSignedDownloadUrl_Deve_Conter_Bucket_E_Object()
 {
-    public static class GoogleCloudStorageFacadeMock
-    {
-        public static Mock<IGoogleCloudStorageManageService> Build(
-            string bucket = "bucket-teste",
-            string objectName = "arquivo.txt")
-        {
-            var mock = new Mock<IGoogleCloudStorageManageService>(MockBehavior.Strict);
+    var facadeMock = new Mock<IGoogleCloudStorageManageService>(MockBehavior.Strict);
 
-            // 1) URL assinada de download
-            mock.Setup(m => m.CreateSignedDownloadUrlAsync(
-                    It.Is<GcsSignedRequest>(r => r.Bucket == bucket && r.ObjectName == objectName),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(BuildSignedResponse(
-                    method: "GET",
-                    url: $"https://signed.example/{bucket}/{objectName}?sig=abc",
-                    contentType: "text/plain"));
+    facadeMock
+      .Setup(m => m.CreateSignedDownloadUrlAsync(
+          It.IsAny<GcsSignedRequest>(),
+          It.IsAny<CancellationToken>()))
+      .ReturnsAsync(new SignedGoogleCloudStorageResponse { Url = "https://signed.example/bucket-teste/arquivo.txt?sig=abc" });
 
-            // 2) URL de upload resumível
-            mock.Setup(m => m.CreateSignedResumableUploadUrlAsync(
-                    It.Is<GcsSignedRequest>(r => r.Bucket == bucket && r.ObjectName == objectName),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(BuildSignedResponse(
-                    method: "POST",
-                    url: $"https://upload.example/{bucket}/{objectName}?upload_id=xyz",
-                    contentType: "application/octet-stream"));
+    var facade = facadeMock.Object;
 
-            // 3) Download como bytes
-            mock.Setup(m => m.DownloadAsBytesAsync(
-                    It.Is<GcsBucketInfoRequest>(q => q.Bucket == bucket && q.ObjectName == objectName),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(BuildStreamResponse(bytes: Encoding.UTF8.GetBytes("conteudo-fake")));
+    var req = new GcsSignedRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt" };
+    var signed = await facade.CreateSignedDownloadUrlAsync(req, CancellationToken.None);
 
-            // 4) Listagem
-            mock.Setup(m => m.ListFilesBucket(
-                    It.Is<GcsListFilesRequest>(q => q.Bucket == bucket && (q.Prefix == null || objectName.StartsWith(q.Prefix))),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Object> {
-                    new Object { Name = objectName, ContentType = "text/plain", Size = "12" }
-                });
+    Assert.NotNull(signed);
+    Assert.Contains("bucket-teste", signed.Url);
+    Assert.Contains("arquivo.txt", signed.Url);
 
-            // 5) Abrir stream assinado
-            mock.Setup(m => m.OpenSignedDownloadStreamAsync(
-                    It.Is<GcsSignedRequest>(r => r.Bucket == bucket && r.ObjectName == objectName),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(BuildStreamResponse(streamFactory: () =>
-                    new MemoryStream(Encoding.UTF8.GetBytes("stream-fake"))));
-
-            return mock;
-        }
-
-        // ------- helpers (não dependem de ctors públicos dos seus DTOs) -------
-        private static SignedGoogleCloudStorageResponse BuildSignedResponse(string method, string url, string contentType)
-        {
-            object inst = TryCreate(typeof(SignedGoogleCloudStorageResponse));
-            SetIfExists(inst, "Method", method);
-            SetIfExists(inst, "Url", url);
-            SetIfExists(inst, "ContentType", contentType);
-            SetIfExists(inst, "ExpiresIn", TimeSpan.FromMinutes(10));
-            return (SignedGoogleCloudStorageResponse)inst;
-        }
-
-        private static StreamResponse BuildStreamResponse(byte[]? bytes = null, Func<Stream>? streamFactory = null)
-        {
-            object inst = TryCreate(typeof(StreamResponse));
-            if (bytes != null) SetIfExists(inst, "Bytes", bytes);
-            if (streamFactory != null) SetIfExists(inst, "Stream", streamFactory());
-            SetIfExists(inst, "Location", "about:blank");
-            SetIfExists(inst, "ContentType", "application/octet-stream");
-            return (StreamResponse)inst;
-        }
-
-        private static object TryCreate(Type t)
-        {
-            var ci = t.GetConstructors(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                      .FirstOrDefault(c => c.GetParameters().Length == 0);
-            if (ci != null) return ci.Invoke(null);
-            return FormatterServices.GetUninitializedObject(t);
-        }
-
-        private static void SetIfExists(object instance, string property, object? value)
-        {
-            var pi = instance.GetType().GetProperty(property,
-                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (pi is { CanWrite: true })
-            {
-                if (value != null && !pi.PropertyType.IsInstanceOfType(value))
-                {
-                    try { value = Convert.ChangeType(value, pi.PropertyType); } catch { }
-                }
-                pi.SetValue(instance, value);
-            }
-        }
-    }
-}
-
-
-
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Xunit;
-
-// ADJUST: namespaces reais
-using CarePlus.Infra.Service.Client.GoogleCloudStorage.Manages;
-using CarePlus.Infra.Service.Client.GoogleCloudStorage.Models;
-
-public class FacadeTests_NoFluent
-{
-    [Fact]
-    public async Task DownloadAsBytes_Deve_Retornar_ConteudoE_VerificarChamada()
-    {
-        var facadeMock = GoogleCloudStorageFacadeMock.Build();
-        var facade = facadeMock.Object;
-
-        var req = new GcsBucketInfoRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt" };
-
-        var resp = await facade.DownloadAsBytesAsync(req, CancellationToken.None);
-
-        Assert.NotNull(resp);
-
-        // tenta ler propriedade Bytes se existir
-        var bytesProp = resp.GetType().GetProperty("Bytes");
-        if (bytesProp != null)
-        {
-            var bytes = (byte[])bytesProp.GetValue(resp)!;
-            Assert.Equal("conteudo-fake", Encoding.UTF8.GetString(bytes));
-        }
-
-        facadeMock.Verify(m => m.DownloadAsBytesAsync(
-            It.Is<GcsBucketInfoRequest>(q => q.Bucket == "bucket-teste" && q.ObjectName == "arquivo.txt"),
-            It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task CreateSignedDownloadUrl_Deve_Conter_Bucket_E_Object()
-    {
-        var facadeMock = GoogleCloudStorageFacadeMock.Build();
-        var facade = facadeMock.Object;
-
-        var req = new GcsSignedRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt" };
-        var signed = await facade.CreateSignedDownloadUrlAsync(req, CancellationToken.None);
-
-        Assert.NotNull(signed);
-        var urlProp = signed.GetType().GetProperty("Url");
-        Assert.NotNull(urlProp);
-
-        var url = (string)urlProp!.GetValue(signed)!;
-        Assert.Contains("bucket-teste", url);
-        Assert.Contains("arquivo.txt", url);
-
-        facadeMock.Verify(m => m.CreateSignedDownloadUrlAsync(
-            It.Is<GcsSignedRequest>(r => r.Bucket == "bucket-teste" && r.ObjectName == "arquivo.txt"),
-            It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task CreateSignedResumableUploadUrl_Deve_Retornar_UrlDeUpload()
-    {
-        var facadeMock = GoogleCloudStorageFacadeMock.Build();
-        var facade = facadeMock.Object;
-
-        var req = new GcsSignedRequest { Bucket = "bucket-teste", ObjectName = "arquivo.txt" };
-        var signed = await facade.CreateSignedResumableUploadUrlAsync(req, CancellationToken.None);
-
-        var url = (string)signed.GetType().GetProperty("Url")!.GetValue(signed)!;
-        Assert.Contains("upload", url);
-        Assert.Contains("upload_id", url);
-
-        facadeMock.Verify(m => m.CreateSignedResumableUploadUrlAsync(
-            It.Is<GcsSignedRequest>(r => r.Bucket == "bucket-teste" && r.ObjectName == "arquivo.txt"),
-            It.IsAny<CancellationToken>()), Times.Once);
-    }
+    facadeMock.Verify(m => m.CreateSignedDownloadUrlAsync(
+        It.Is<GcsSignedRequest>(r => r.Bucket == "bucket-teste" && r.ObjectName == "arquivo.txt"),
+        It.IsAny<CancellationToken>()), Times.Once);
 }
