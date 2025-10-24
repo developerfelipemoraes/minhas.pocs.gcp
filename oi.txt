@@ -1,130 +1,73 @@
-using System;
 using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Auth.OAuth2;
+using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
-// AJUSTE: namespaces reais do seu projeto:
-using CarePlus.Infra.Service.Client.GoogleCloudStorage;                // GoogleCloudStorageService
-using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration;  // GoogleCloudStorageOptions
-using CarePlus.Infra.Service.Client.GoogleCloudStorage.Models;         // GcsSignedRequest, StreamResponse
-
-public class GoogleCloudStorageService_StreamTests
+public class GoogleCloudStorageServiceTests
 {
-    // --- handler fake para HttpClient ---
-    private sealed class FakeHandler : HttpMessageHandler
-    {
-        private readonly HttpResponseMessage _response;
-        private FakeHandler(HttpResponseMessage response) { _response = response; }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
-            => Task.FromResult(_response);
-
-        public static HttpClient BuildClient(byte[] body, string contentType, string fileName, HttpStatusCode code = HttpStatusCode.OK)
-        {
-            var content = new StreamContent(new MemoryStream(body));
-            content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-            content.Headers.ContentLength = body.Length;
-            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-            {
-                FileNameStar = fileName
-            };
-
-            var resp = new HttpResponseMessage(code) { Content = content };
-            return new HttpClient(new FakeHandler(resp), disposeHandler: true);
-        }
-    }
-
-    // --- UrlSigner offline (RSA em memória) ---
-    private static UrlSigner CreateOfflineSigner()
-    {
-        var email = "sa-test@local.iam.gserviceaccount.com";
-        using var rsa = RSA.Create(2048);
-        var pkcs8 = Convert.ToBase64String(rsa.ExportPkcs8PrivateKey());
-        var sb = new StringBuilder();
-        sb.AppendLine("-----BEGIN PRIVATE KEY-----");
-        for (int i = 0; i < pkcs8.Length; i += 64) sb.AppendLine(pkcs8.Substring(i, Math.Min(64, pkcs8.Length - i)));
-        sb.AppendLine("-----END PRIVATE KEY-----");
-        var cred = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(email).FromPrivateKey(sb.ToString()));
-        return UrlSigner.FromServiceAccountCredential(cred); // sem rede
-    }
-
     [Fact]
-    public async Task OpenSignedDownloadStreamAsync_Deve_Retornar_StreamResponse_Com_Headers()
+    public async Task DownloadAsBytesAsync_DeveBaixar_UsandoStorageMock_InjetadoPorReflexao()
     {
-        // Arrange: HttpClient fake para o caminho da URL assinada
-        var bytes = Encoding.UTF8.GetBytes("conteudo-fake");
-        var httpClient = FakeHandler.BuildClient(bytes, "text/plain", "arquivo.txt", HttpStatusCode.OK);
+        // Arrange
+        var bucket = "my-bucket";
+        var objectName = "folder/file.txt";
+        var bytes = Encoding.UTF8.GetBytes("hello gcs!");
 
-        var httpFactory = new Mock<IHttpClientFactory>(MockBehavior.Strict);
-        httpFactory.Setup(f => f.CreateClient("GcsSignedUrlHttp")).Returns(httpClient);
+        var storageMock = new Mock<StorageClient>();
 
-        // StorageClient não é usado neste método, mas o construtor pede — mock vazio
-        var storageMock = new Mock<StorageClient>(MockBehavior.Strict);
+        // Simula o metadata do objeto
+        storageMock.Setup(s => s.GetObjectAsync(
+                bucket, objectName,
+                It.IsAny<GetObjectOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Object { Name = objectName, ContentType = "text/plain" });
 
-        // Construir o serviço com dependências fakes
-        var options = new GoogleCloudStorageOptions();                 // AJUSTE se tiver propriedades obrigatórias
-        var logger = NullLogger<GoogleCloudStorageService>.Instance;
-        var signer = CreateOfflineSigner();
+        // Simula o download escrevendo bytes no stream de destino
+        storageMock.Setup(s => s.DownloadObjectAsync(
+                bucket, objectName,
+                It.IsAny<Stream>(),
+                It.IsAny<DownloadObjectOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string b, string n, Stream dest, DownloadObjectOptions o, CancellationToken ct) =>
+            {
+                dest.Write(bytes, 0, bytes.Length);
+                dest.Position = 0;
+                return Task.CompletedTask;
+            });
 
-        // AJUSTE a assinatura do construtor se necessário:
-        var sut = new GoogleCloudStorageService(
-            options,
-            signer,
-            storageMock.Object,
-            logger,
-            httpFactory.Object);
+        // Instancie o SUT normalmente (passe as deps reais/fakes que seu construtor exige)
+        var sut = new GoogleCloudStorageService(/* ...deps... */);
 
-        var req = new GcsSignedRequest
-        {
-            Bucket = "bucket-teste",
-            ObjectName = "arquivo.txt",
-            ContentType = "text/plain",
-            ContentLength = bytes.Length
-        };
+        // Injeta o StorageClient mock no campo privado _storage
+        InjectPrivateField(sut, "_storage", storageMock.Object);
 
         // Act
-        var resp = await sut.OpenSignedDownloadStreamAsync(req, CancellationToken.None);
+        var resp = await sut.DownloadAsBytesAsync(new GcsBucketInfoRequest
+        {
+            Bucket = bucket,
+            DownloadFileName = objectName
+        });
 
-        // Assert (sem FluentAssertions)
+        // Assert
         Assert.NotNull(resp);
+        Assert.Equal("text/plain", resp.ContentType);
+        Assert.Equal(Path.GetFileName(objectName), resp.FileName);
 
-        // Tente acessar propriedades por nome comum (ajuste se os nomes forem diferentes)
-        // StatusCode
-        var statusProp = resp.GetType().GetProperty("StatusCode");
-        Assert.NotNull(statusProp);
-        Assert.Equal(HttpStatusCode.OK, (HttpStatusCode)statusProp!.GetValue(resp)!);
+        using var ms = new MemoryStream();
+        await resp.ContentStream.CopyToAsync(ms);
+        Assert.Equal(bytes, ms.ToArray());
+    }
 
-        // ContentType
-        var ctProp = resp.GetType().GetProperty("ContentType");
-        Assert.NotNull(ctProp);
-        Assert.Equal("text/plain", (string)ctProp!.GetValue(resp)!);
-
-        // ContentLength
-        var lenProp = resp.GetType().GetProperty("ContentLength");
-        Assert.NotNull(lenProp);
-        Assert.Equal((long)bytes.Length, Convert.ToInt64(lenProp!.GetValue(resp)!));
-
-        // FileName
-        var fileProp = resp.GetType().GetProperty("FileName");
-        Assert.NotNull(fileProp);
-        Assert.Equal("arquivo.txt", (string)fileProp!.GetValue(resp)!);
-
-        // Stream
-        var streamProp = resp.GetType().GetProperty("Stream");
-        Assert.NotNull(streamProp);
-        using var stream = (Stream)streamProp!.GetValue(resp)!;
-        using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: false);
-        var text = await reader.ReadToEndAsync();
-        Assert.Equal("conteudo-fake", text);
+    // Helper genérico para injetar campo privado (mesmo se for readonly)
+    private static void InjectPrivateField(object instance, string fieldName, object value)
+    {
+        var fi = instance.GetType()
+            .GetField(fieldName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(fi); // garante que o nome do campo está correto
+        fi!.SetValue(instance, value);
     }
 }
