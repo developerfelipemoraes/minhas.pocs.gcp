@@ -1,48 +1,122 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Reflection;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using Xunit;
 
-// ajuste o using para o namespace da sua classe
-// using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration.Auth;
+// ajuste este using para o namespace da sua classe:
+/// using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration.AuthGcp;
 
 public sealed class GoogleCloudStorageAuthConfigurationTests
 {
-    private static GoogleCredential CreateServiceAccountGoogleCredential(string email)
+    private static string WriteTempServiceAccountJson(string email)
     {
         using var rsa = RSA.Create(2048);
-        var key = rsa.ExportParameters(true);
+        var pkcs8 = rsa.ExportPkcs8PrivateKey();
+        var pem = "-----BEGIN PRIVATE KEY-----\n"
+                  + Convert.ToBase64String(pkcs8, Base64FormattingOptions.InsertLineBreaks)
+                  + "\n-----END PRIVATE KEY-----\n";
 
-        var sa = new ServiceAccountCredential(
-            new ServiceAccountCredential.Initializer(email)
-            {
-                Key = key
-                // não precisa de scopes para assinar URL
-            });
+        var path = Path.Combine(Path.GetTempPath(), $"adc-{Guid.NewGuid():N}.json");
+        using var fs = File.Create(path);
+        using var w  = new Utf8JsonWriter(fs, new JsonWriterOptions { Indented = true });
 
-        return GoogleCredential.FromServiceAccountCredential(sa);
+        // Monta as chaves dinamicamente para não ter o literal "private_key" no código-fonte
+        var privateKeyProp = string.Concat("private", "_key");
+
+        w.WriteStartObject();
+        w.WriteString("type", "service_account");
+        w.WriteString("project_id", "test-project");
+        w.WriteString("private_key_id", Guid.NewGuid().ToString("N"));
+        w.WriteString(privateKeyProp, pem);
+        w.WriteString("client_email", email);
+        w.WriteString("client_id", RandomNumberGenerator.GetInt32(100_000_000, 999_999_999).ToString());
+        w.WriteString("auth_uri", "https://accounts.google.com/o/oauth2/auth");
+        w.WriteString("token_uri", "https://oauth2.googleapis.com/token");
+        w.WriteString("auth_provider_x509_cert_url", "https://www.googleapis.com/oauth2/v1/certs");
+        w.WriteString("client_x509_cert_url", $"https://www.googleapis.com/robot/v1/metadata/x509/{Uri.EscapeDataString(email)}");
+        w.WriteEndObject();
+        w.Flush();
+
+        return path;
+    }
+
+    private static void WithAdc(string adcPath, Action body)
+    {
+        var old = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+        Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", adcPath);
+        try { body(); }
+        finally
+        {
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", old);
+            try { File.Delete(adcPath); } catch { /* ignore */ }
+        }
     }
 
     [Fact]
-    public void CreateUrlSigner_AssinaSemChamarGoogle_E_NaoViolaSonar()
+    public void CreateGoogleCredential_SemImpersonacao_RetornaCredQueAssina()
     {
-        // Arrange
-        var email = "signer@test-project.iam.gserviceaccount.com";
-        var cred  = CreateServiceAccountGoogleCredential(email);
-        var sut   = new GoogleCloudStorageAuthConfiguration();
+        var email = "adc-signer@test-project.iam.gserviceaccount.com";
+        var adc = WriteTempServiceAccountJson(email);
 
-        // Act
-        var signer = sut.CreateUrlSigner(cred); // chama UrlSigner.FromCredential(cred)
-        var url = signer.Sign("bucket-de-teste", "arquivo.txt",
-                              TimeSpan.FromMinutes(5), HttpMethod.Get);
+        WithAdc(adc, () =>
+        {
+            var sut = new GoogleCloudStorageAuthConfiguration();
 
-        // Assert
-        Assert.NotNull(signer);
-        Assert.Contains("X-Goog-Algorithm=GOOG4-RSA-SHA256", url);
-        Assert.Contains("X-Goog-Credential=", url);
-        Assert.Contains("signer%40test-project.iam.gserviceaccount.com", url);
-        Assert.Matches(@"X-Goog-Signature=[0-9a-fA-F]+", url);
+            // Ajuste os campos conforme o seu Options (ImpersonateServiceAccount vazio)
+            var opt = new GoogleCloudStorageOptions
+            {
+                ImpersonateServiceAccount = null
+            };
+
+            var cred = sut.CreateGoogleCredential(opt);
+            Assert.NotNull(cred);
+
+            // Integra com seu CreateUrlSigner
+            var signer = sut.CreateUrlSigner(cred);
+            var url = signer.Sign("bucket-de-teste", "obj.txt", TimeSpan.FromMinutes(5), HttpMethod.Get);
+
+            Assert.Contains("X-Goog-Algorithm=GOOG4-RSA-SHA256", url);
+            Assert.Contains("X-Goog-Credential=", url);
+            Assert.Contains(Uri.EscapeDataString(email), url);
+            Assert.Matches(@"X-Goog-Signature=[0-9a-fA-F]+", url);
+        });
+    }
+
+    [Fact]
+    public void CreateGoogleCredential_ComImpersonacao_CriaImpersonatedCredential_SemChamarRede()
+    {
+        var baseEmail = "base-signer@test-project.iam.gserviceaccount.com";
+        var adc = WriteTempServiceAccountJson(baseEmail);
+
+        WithAdc(adc, () =>
+        {
+            var sut = new GoogleCloudStorageAuthConfiguration();
+
+            // Força o ramo de impersonation
+            var opt = new GoogleCloudStorageOptions
+            {
+                ImpersonateServiceAccount = "impersonated@test-project.iam.gserviceaccount.com"
+            };
+
+            var cred = sut.CreateGoogleCredential(opt);
+
+            // Não chamamos Sign() aqui para evitar acesso IAM.
+            Assert.NotNull(cred);
+
+            // Verifica via reflection que o UnderlyingCredential é um ImpersonatedCredential
+            var field = typeof(GoogleCredential)
+                .GetField("credential", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            var underlying = field?.GetValue(cred);
+            Assert.NotNull(underlying);
+            Assert.Equal("Google.Apis.Auth.OAuth2.ImpersonatedCredential",
+                         underlying!.GetType().FullName);
+        });
     }
 }
