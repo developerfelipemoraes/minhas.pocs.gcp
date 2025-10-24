@@ -1,69 +1,137 @@
-// Test project (.NET 8)
+using System;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Storage.v1.Data;
-using Google.Cloud.Storage.V1;
 using Moq;
 using Xunit;
-using System.Runtime.CompilerServices; // <- UnsafeAccessor
 
-public class GoogleCloudStorageServiceTests
+public class FileAppServiceTests
 {
-    // Acesso direto ao campo privado _storage (mesmo se for readonly)
-    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_storage")]
-    extern static ref StorageClient GetStorageField(GoogleCloudStorageService instance);
+    private static StreamResponse MakeStreamResponse(string fileName, string contentType, byte[] bytes)
+    {
+        return new StreamResponse
+        {
+            FileName = fileName,
+            ContentType = contentType,
+            ContentLength = bytes.Length,
+            ContentStream = new MemoryStream(bytes) // cada teste cria seu stream
+        };
+    }
 
     [Fact]
-    public async Task DownloadAsBytesAsync_DeveRetornarConteudo_DoStorageMock()
+    public async Task GetFileBytesAsync_DeveRetornarBytes_DoMockDaFacade()
     {
         // Arrange
         var bucket = "my-bucket";
-        var objectName = "folder/file.txt";
-        var bytes = Encoding.UTF8.GetBytes("hello gcs!");
+        var key = "docs/readme.txt";
+        var payload = Encoding.UTF8.GetBytes("hello!");
 
-        var storageMock = new Mock<StorageClient>();
+        var facade = new Mock<IGoogleCloudStorageManageService>(MockBehavior.Strict);
 
-        storageMock.Setup(s => s.GetObjectAsync(
-                bucket, objectName,
-                It.IsAny<GetObjectOptions>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Object { Name = objectName, ContentType = "text/plain" });
+        facade.Setup(f => f.DownloadAsBytesAsync(
+                        It.Is<GcsBucketInfoRequest>(r =>
+                            r.Bucket == bucket && r.DownloadFileName == key),
+                        It.IsAny<CancellationToken>()))
+              .ReturnsAsync(MakeStreamResponse(Path.GetFileName(key), "text/plain", payload));
 
-        storageMock.Setup(s => s.DownloadObjectAsync(
-                bucket, objectName,
-                It.IsAny<Stream>(),
-                It.IsAny<DownloadObjectOptions>(),
-                It.IsAny<CancellationToken>()))
-            .Returns((string b, string n, Stream dest, DownloadObjectOptions o, CancellationToken ct) =>
-            {
-                dest.Write(bytes, 0, bytes.Length);
-                dest.Position = 0;
-                return Task.CompletedTask;
-            });
-
-        // Instancie seu serviço como na produção
-        var sut = new GoogleCloudStorageService(/* deps reais da sua classe */);
-
-        // Injeta o mock no campo privado _storage (sem reflection pesada, funciona com readonly)
-        ref var storageRef = ref GetStorageField(sut);
-        storageRef = storageMock.Object;
+        var sut = new FileAppService(facade.Object);
 
         // Act
-        var resp = await sut.DownloadAsBytesAsync(new GcsBucketInfoRequest
-        {
-            Bucket = bucket,
-            DownloadFileName = objectName
-        });
+        var result = await sut.GetFileBytesAsync(bucket, key);
 
         // Assert
-        Assert.NotNull(resp);
-        Assert.Equal("text/plain", resp.ContentType);
-        Assert.Equal(Path.GetFileName(objectName), resp.FileName);
+        Assert.Equal(payload, result);
 
-        using var ms = new MemoryStream();
-        await resp.ContentStream.CopyToAsync(ms);
-        Assert.Equal(bytes, ms.ToArray());
+        // Verifica 1 chamada, com os parâmetros corretos
+        facade.Verify(f => f.DownloadAsBytesAsync(
+                            It.Is<GcsBucketInfoRequest>(r =>
+                                r.Bucket == bucket && r.DownloadFileName == key),
+                            It.IsAny<CancellationToken>()),
+                      Times.Once);
+    }
+
+    [Fact]
+    public async Task GetFileBytesAsync_QuandoFacadeLancar_DevePropagarOuTratar()
+    {
+        // Arrange
+        var facade = new Mock<IGoogleCloudStorageManageService>();
+        facade.Setup(f => f.DownloadAsBytesAsync(It.IsAny<GcsBucketInfoRequest>(), It.IsAny<CancellationToken>()))
+              .ThrowsAsync(new InvalidOperationException("falha simulada"));
+
+        var sut = new FileAppService(facade.Object);
+
+        // Act + Assert (aqui estou propagando; se seu consumer “trata”, adapte o teste)
+        await Assert.ThrowsAsync<InvalidOperationException>(() => sut.GetFileBytesAsync("b", "k"));
+    }
+
+    [Fact]
+    public async Task GetFileBytesAsync_RespeitaCancelamento()
+    {
+        // Arrange
+        var cts = new CancellationTokenSource();
+        cts.Cancel(); // já cancelado
+
+        var facade = new Mock<IGoogleCloudStorageManageService>(MockBehavior.Strict);
+
+        // Se o token já está cancelado, o consumer pode nem chamar a facade
+        // ou a facade pode ser chamada e lançar. Aqui assumimos que NÃO chama.
+        var sut = new FileAppService(facade.Object);
+
+        // Act + Assert
+        await Assert.ThrowsAsync<TaskCanceledException>(() => sut.GetFileBytesAsync("b", "k", cts.Token));
+
+        // Garante que não chamou a facade (ajuste se seu fluxo chamar mesmo assim)
+        facade.Verify(f => f.DownloadAsBytesAsync(It.IsAny<GcsBucketInfoRequest>(), It.IsAny<CancellationToken>()),
+                      Times.Never);
+    }
+
+    [Fact]
+    public async Task GetFileBytesAsync_ComRetry_SucessoNaSegundaTentativa()
+    {
+        // Exemplo se seu consumer possui retry interno; se não tiver, ignore este teste.
+        var bucket = "b";
+        var key = "k";
+        var payload = new byte[] { 1, 2, 3 };
+
+        var facade = new Mock<IGoogleCloudStorageManageService>();
+
+        facade.SetupSequence(f => f.DownloadAsBytesAsync(
+                                It.Is<GcsBucketInfoRequest>(r => r.Bucket == bucket && r.DownloadFileName == key),
+                                It.IsAny<CancellationToken>()))
+              .ThrowsAsync(new TimeoutException("timeout 1"))
+              .ReturnsAsync(MakeStreamResponse(key, "application/octet-stream", payload));
+
+        var sut = new FileAppServiceWithRetry(facade.Object); // ver classe abaixo
+
+        var result = await sut.GetFileBytesAsync(bucket, key);
+
+        Assert.Equal(payload, result);
+        facade.Verify(f => f.DownloadAsBytesAsync(It.IsAny<GcsBucketInfoRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+    }
+}
+
+// Exemplo de consumer com retry simples (apenas para ilustrar o teste acima)
+public sealed class FileAppServiceWithRetry
+{
+    private readonly IGoogleCloudStorageManageService _gcs;
+    public FileAppServiceWithRetry(IGoogleCloudStorageManageService gcs) => _gcs = gcs;
+
+    public async Task<byte[]> GetFileBytesAsync(string bucket, string key, CancellationToken ct = default)
+    {
+        var req = new GcsBucketInfoRequest { Bucket = bucket, DownloadFileName = key };
+        var tries = 0;
+
+        while (true)
+        {
+            try
+            {
+                var resp = await _gcs.DownloadAsBytesAsync(req, ct);
+                using var ms = new MemoryStream();
+                await resp.ContentStream.CopyToAsync(ms, ct);
+                return ms.ToArray();
+            }
+            catch when (++tries < 2) { await Task.Delay(10, ct); }
+        }
     }
 }
