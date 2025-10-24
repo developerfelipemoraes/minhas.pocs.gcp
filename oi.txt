@@ -1,137 +1,72 @@
 using System;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Moq;
+using System.Net.Http;
+using System.Security.Cryptography;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
 using Xunit;
+// using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration; // <- seu namespace aqui
 
-public class FileAppServiceTests
+public sealed class GoogleCloudStorageAuthConfigurationTests
 {
-    private static StreamResponse MakeStreamResponse(string fileName, string contentType, byte[] bytes)
+    private static GoogleCredential CreateFakeServiceAccount(string email)
     {
-        return new StreamResponse
-        {
-            FileName = fileName,
-            ContentType = contentType,
-            ContentLength = bytes.Length,
-            ContentStream = new MemoryStream(bytes) // cada teste cria seu stream
-        };
+        using var rsa = RSA.Create(2048);
+        var pkcs8 = rsa.ExportPkcs8PrivateKey();
+        var pem = "-----BEGIN PRIVATE KEY-----\n"
+                  + Convert.ToBase64String(pkcs8, Base64FormattingOptions.InsertLineBreaks)
+                  + "\n-----END PRIVATE KEY-----\n";
+
+        // JSON mínimo de service account com a chave acima (tudo offline)
+        var json = $@"{{
+  ""type"": ""service_account"",
+  ""project_id"": ""test-project"",
+  ""private_key_id"": ""{Guid.NewGuid():N}"",
+  ""private_key"": ""{pem.Replace("\n","\\n")}"",
+  ""client_email"": ""{email}"",
+  ""client_id"": ""{RandomNumberGenerator.GetInt32(100000000, 999999999)}"",
+  ""auth_uri"": ""https://accounts.google.com/o/oauth2/auth"",
+  ""token_uri"": ""https://oauth2.googleapis.com/token"",
+  ""auth_provider_x509_cert_url"": ""https://www.googleapis.com/oauth2/v1/certs"",
+  ""client_x509_cert_url"": ""https://www.googleapis.com/robot/v1/metadata/x509/{Uri.EscapeDataString(email)}""
+}}";
+
+        return GoogleCredential.FromJson(json);
     }
 
     [Fact]
-    public async Task GetFileBytesAsync_DeveRetornarBytes_DoMockDaFacade()
+    public void CreateUrlSigner_GeraAssinadorEAssinaSemChamarGoogle()
     {
         // Arrange
-        var bucket = "my-bucket";
-        var key = "docs/readme.txt";
-        var payload = Encoding.UTF8.GetBytes("hello!");
-
-        var facade = new Mock<IGoogleCloudStorageManageService>(MockBehavior.Strict);
-
-        facade.Setup(f => f.DownloadAsBytesAsync(
-                        It.Is<GcsBucketInfoRequest>(r =>
-                            r.Bucket == bucket && r.DownloadFileName == key),
-                        It.IsAny<CancellationToken>()))
-              .ReturnsAsync(MakeStreamResponse(Path.GetFileName(key), "text/plain", payload));
-
-        var sut = new FileAppService(facade.Object);
+        var email = "testsigner@test-project.iam.gserviceaccount.com";
+        var cred  = CreateFakeServiceAccount(email);
+        var sut   = new GoogleCloudStorageAuthConfiguration();
 
         // Act
-        var result = await sut.GetFileBytesAsync(bucket, key);
+        var signer = sut.CreateUrlSigner(cred);
+        var url = signer.Sign("bucket-de-teste", "arquivo.txt",
+                              TimeSpan.FromMinutes(5), HttpMethod.Get);
 
         // Assert
-        Assert.Equal(payload, result);
-
-        // Verifica 1 chamada, com os parâmetros corretos
-        facade.Verify(f => f.DownloadAsBytesAsync(
-                            It.Is<GcsBucketInfoRequest>(r =>
-                                r.Bucket == bucket && r.DownloadFileName == key),
-                            It.IsAny<CancellationToken>()),
-                      Times.Once);
+        Assert.NotNull(signer);
+        Assert.Contains("X-Goog-Algorithm=GOOG4-RSA-SHA256", url);
+        Assert.Contains("X-Goog-Credential=", url);
+        Assert.Contains("testsigner%40test-project.iam.gserviceaccount.com", url);
+        Assert.Matches(@"X-Goog-Signature=[0-9a-fA-F]+", url);
     }
 
     [Fact]
-    public async Task GetFileBytesAsync_QuandoFacadeLancar_DevePropagarOuTratar()
+    public void CreateUrlSigner_UsaExatamenteACredencialRecebida()
     {
-        // Arrange
-        var facade = new Mock<IGoogleCloudStorageManageService>();
-        facade.Setup(f => f.DownloadAsBytesAsync(It.IsAny<GcsBucketInfoRequest>(), It.IsAny<CancellationToken>()))
-              .ThrowsAsync(new InvalidOperationException("falha simulada"));
+        var sa1 = "sa1@test-project.iam.gserviceaccount.com";
+        var sa2 = "sa2@test-project.iam.gserviceaccount.com";
+        var cred1 = CreateFakeServiceAccount(sa1);
+        var cred2 = CreateFakeServiceAccount(sa2);
+        var sut = new GoogleCloudStorageAuthConfiguration();
 
-        var sut = new FileAppService(facade.Object);
+        var url1 = sut.CreateUrlSigner(cred1).Sign("b", "o1.txt", TimeSpan.FromMinutes(1), HttpMethod.Get);
+        var url2 = sut.CreateUrlSigner(cred2).Sign("b", "o2.txt", TimeSpan.FromMinutes(1), HttpMethod.Get);
 
-        // Act + Assert (aqui estou propagando; se seu consumer “trata”, adapte o teste)
-        await Assert.ThrowsAsync<InvalidOperationException>(() => sut.GetFileBytesAsync("b", "k"));
-    }
-
-    [Fact]
-    public async Task GetFileBytesAsync_RespeitaCancelamento()
-    {
-        // Arrange
-        var cts = new CancellationTokenSource();
-        cts.Cancel(); // já cancelado
-
-        var facade = new Mock<IGoogleCloudStorageManageService>(MockBehavior.Strict);
-
-        // Se o token já está cancelado, o consumer pode nem chamar a facade
-        // ou a facade pode ser chamada e lançar. Aqui assumimos que NÃO chama.
-        var sut = new FileAppService(facade.Object);
-
-        // Act + Assert
-        await Assert.ThrowsAsync<TaskCanceledException>(() => sut.GetFileBytesAsync("b", "k", cts.Token));
-
-        // Garante que não chamou a facade (ajuste se seu fluxo chamar mesmo assim)
-        facade.Verify(f => f.DownloadAsBytesAsync(It.IsAny<GcsBucketInfoRequest>(), It.IsAny<CancellationToken>()),
-                      Times.Never);
-    }
-
-    [Fact]
-    public async Task GetFileBytesAsync_ComRetry_SucessoNaSegundaTentativa()
-    {
-        // Exemplo se seu consumer possui retry interno; se não tiver, ignore este teste.
-        var bucket = "b";
-        var key = "k";
-        var payload = new byte[] { 1, 2, 3 };
-
-        var facade = new Mock<IGoogleCloudStorageManageService>();
-
-        facade.SetupSequence(f => f.DownloadAsBytesAsync(
-                                It.Is<GcsBucketInfoRequest>(r => r.Bucket == bucket && r.DownloadFileName == key),
-                                It.IsAny<CancellationToken>()))
-              .ThrowsAsync(new TimeoutException("timeout 1"))
-              .ReturnsAsync(MakeStreamResponse(key, "application/octet-stream", payload));
-
-        var sut = new FileAppServiceWithRetry(facade.Object); // ver classe abaixo
-
-        var result = await sut.GetFileBytesAsync(bucket, key);
-
-        Assert.Equal(payload, result);
-        facade.Verify(f => f.DownloadAsBytesAsync(It.IsAny<GcsBucketInfoRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
-    }
-}
-
-// Exemplo de consumer com retry simples (apenas para ilustrar o teste acima)
-public sealed class FileAppServiceWithRetry
-{
-    private readonly IGoogleCloudStorageManageService _gcs;
-    public FileAppServiceWithRetry(IGoogleCloudStorageManageService gcs) => _gcs = gcs;
-
-    public async Task<byte[]> GetFileBytesAsync(string bucket, string key, CancellationToken ct = default)
-    {
-        var req = new GcsBucketInfoRequest { Bucket = bucket, DownloadFileName = key };
-        var tries = 0;
-
-        while (true)
-        {
-            try
-            {
-                var resp = await _gcs.DownloadAsBytesAsync(req, ct);
-                using var ms = new MemoryStream();
-                await resp.ContentStream.CopyToAsync(ms, ct);
-                return ms.ToArray();
-            }
-            catch when (++tries < 2) { await Task.Delay(10, ct); }
-        }
+        Assert.Contains("sa1%40test-project.iam.gserviceaccount.com", url1);
+        Assert.Contains("sa2%40test-project.iam.gserviceaccount.com", url2);
     }
 }
