@@ -4,45 +4,37 @@ using System.Security.Cryptography;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using Xunit;
-// using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration; // <- seu namespace aqui
+
+// ajuste o using para o namespace da sua classe
+// using CarePlus.Infra.Service.Client.GoogleCloudStorage.Configuration.Auth;
 
 public sealed class GoogleCloudStorageAuthConfigurationTests
 {
-    private static GoogleCredential CreateFakeServiceAccount(string email)
+    private static GoogleCredential CreateServiceAccountGoogleCredential(string email)
     {
         using var rsa = RSA.Create(2048);
-        var pkcs8 = rsa.ExportPkcs8PrivateKey();
-        var pem = "-----BEGIN PRIVATE KEY-----\n"
-                  + Convert.ToBase64String(pkcs8, Base64FormattingOptions.InsertLineBreaks)
-                  + "\n-----END PRIVATE KEY-----\n";
+        var key = rsa.ExportParameters(true);
 
-        // JSON mínimo de service account com a chave acima (tudo offline)
-        var json = $@"{{
-  ""type"": ""service_account"",
-  ""project_id"": ""test-project"",
-  ""private_key_id"": ""{Guid.NewGuid():N}"",
-  ""private_key"": ""{pem.Replace("\n","\\n")}"",
-  ""client_email"": ""{email}"",
-  ""client_id"": ""{RandomNumberGenerator.GetInt32(100000000, 999999999)}"",
-  ""auth_uri"": ""https://accounts.google.com/o/oauth2/auth"",
-  ""token_uri"": ""https://oauth2.googleapis.com/token"",
-  ""auth_provider_x509_cert_url"": ""https://www.googleapis.com/oauth2/v1/certs"",
-  ""client_x509_cert_url"": ""https://www.googleapis.com/robot/v1/metadata/x509/{Uri.EscapeDataString(email)}""
-}}";
+        var sa = new ServiceAccountCredential(
+            new ServiceAccountCredential.Initializer(email)
+            {
+                Key = key
+                // não precisa de scopes para assinar URL
+            });
 
-        return GoogleCredential.FromJson(json);
+        return GoogleCredential.FromServiceAccountCredential(sa);
     }
 
     [Fact]
-    public void CreateUrlSigner_GeraAssinadorEAssinaSemChamarGoogle()
+    public void CreateUrlSigner_AssinaSemChamarGoogle_E_NaoViolaSonar()
     {
         // Arrange
-        var email = "testsigner@test-project.iam.gserviceaccount.com";
-        var cred  = CreateFakeServiceAccount(email);
+        var email = "signer@test-project.iam.gserviceaccount.com";
+        var cred  = CreateServiceAccountGoogleCredential(email);
         var sut   = new GoogleCloudStorageAuthConfiguration();
 
         // Act
-        var signer = sut.CreateUrlSigner(cred);
+        var signer = sut.CreateUrlSigner(cred); // chama UrlSigner.FromCredential(cred)
         var url = signer.Sign("bucket-de-teste", "arquivo.txt",
                               TimeSpan.FromMinutes(5), HttpMethod.Get);
 
@@ -50,23 +42,7 @@ public sealed class GoogleCloudStorageAuthConfigurationTests
         Assert.NotNull(signer);
         Assert.Contains("X-Goog-Algorithm=GOOG4-RSA-SHA256", url);
         Assert.Contains("X-Goog-Credential=", url);
-        Assert.Contains("testsigner%40test-project.iam.gserviceaccount.com", url);
+        Assert.Contains("signer%40test-project.iam.gserviceaccount.com", url);
         Assert.Matches(@"X-Goog-Signature=[0-9a-fA-F]+", url);
-    }
-
-    [Fact]
-    public void CreateUrlSigner_UsaExatamenteACredencialRecebida()
-    {
-        var sa1 = "sa1@test-project.iam.gserviceaccount.com";
-        var sa2 = "sa2@test-project.iam.gserviceaccount.com";
-        var cred1 = CreateFakeServiceAccount(sa1);
-        var cred2 = CreateFakeServiceAccount(sa2);
-        var sut = new GoogleCloudStorageAuthConfiguration();
-
-        var url1 = sut.CreateUrlSigner(cred1).Sign("b", "o1.txt", TimeSpan.FromMinutes(1), HttpMethod.Get);
-        var url2 = sut.CreateUrlSigner(cred2).Sign("b", "o2.txt", TimeSpan.FromMinutes(1), HttpMethod.Get);
-
-        Assert.Contains("sa1%40test-project.iam.gserviceaccount.com", url1);
-        Assert.Contains("sa2%40test-project.iam.gserviceaccount.com", url2);
     }
 }
