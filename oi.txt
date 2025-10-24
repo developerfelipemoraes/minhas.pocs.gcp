@@ -1,3 +1,4 @@
+// Test project (.NET 8)
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -6,11 +7,16 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using Moq;
 using Xunit;
+using System.Runtime.CompilerServices; // <- UnsafeAccessor
 
 public class GoogleCloudStorageServiceTests
 {
+    // Acesso direto ao campo privado _storage (mesmo se for readonly)
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_storage")]
+    extern static ref StorageClient GetStorageField(GoogleCloudStorageService instance);
+
     [Fact]
-    public async Task DownloadAsBytesAsync_DeveBaixar_UsandoStorageMock_InjetadoPorReflexao()
+    public async Task DownloadAsBytesAsync_DeveRetornarConteudo_DoStorageMock()
     {
         // Arrange
         var bucket = "my-bucket";
@@ -19,14 +25,12 @@ public class GoogleCloudStorageServiceTests
 
         var storageMock = new Mock<StorageClient>();
 
-        // Simula o metadata do objeto
         storageMock.Setup(s => s.GetObjectAsync(
                 bucket, objectName,
                 It.IsAny<GetObjectOptions>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Object { Name = objectName, ContentType = "text/plain" });
 
-        // Simula o download escrevendo bytes no stream de destino
         storageMock.Setup(s => s.DownloadObjectAsync(
                 bucket, objectName,
                 It.IsAny<Stream>(),
@@ -39,11 +43,12 @@ public class GoogleCloudStorageServiceTests
                 return Task.CompletedTask;
             });
 
-        // Instancie o SUT normalmente (passe as deps reais/fakes que seu construtor exige)
-        var sut = new GoogleCloudStorageService(/* ...deps... */);
+        // Instancie seu serviço como na produção
+        var sut = new GoogleCloudStorageService(/* deps reais da sua classe */);
 
-        // Injeta o StorageClient mock no campo privado _storage
-        InjectPrivateField(sut, "_storage", storageMock.Object);
+        // Injeta o mock no campo privado _storage (sem reflection pesada, funciona com readonly)
+        ref var storageRef = ref GetStorageField(sut);
+        storageRef = storageMock.Object;
 
         // Act
         var resp = await sut.DownloadAsBytesAsync(new GcsBucketInfoRequest
@@ -60,14 +65,5 @@ public class GoogleCloudStorageServiceTests
         using var ms = new MemoryStream();
         await resp.ContentStream.CopyToAsync(ms);
         Assert.Equal(bytes, ms.ToArray());
-    }
-
-    // Helper genérico para injetar campo privado (mesmo se for readonly)
-    private static void InjectPrivateField(object instance, string fieldName, object value)
-    {
-        var fi = instance.GetType()
-            .GetField(fieldName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        Assert.NotNull(fi); // garante que o nome do campo está correto
-        fi!.SetValue(instance, value);
     }
 }
