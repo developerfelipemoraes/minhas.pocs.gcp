@@ -62,6 +62,50 @@ Esta arquitetura foi escolhida especificamente para otimizar a performance e a e
 -   [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 -   Credenciais do Google Cloud configuradas (via `gcloud auth application-default login` para desenvolvimento local).
 
+## Endpoints da API
+
+### Upload
+
+A API oferece dois endpoints para upload, cada um otimizado para um caso de uso específico.
+
+#### 1. Upload via Raw Stream
+
+-   **Endpoint**: `POST /upload/stream/{bucketName}/{objectName}`
+-   **Descrição**: Este é o método de **mais alta performance**. Ele espera que o corpo da requisição (`Request.Body`) seja o *stream* bruto do arquivo.
+-   **Caso de Uso**: Ideal para clientes (como aplicativos móveis, desktops ou outros serviços de backend) que podem enviar o arquivo diretamente no corpo da requisição, sem encapsulamento de formulário.
+-   **Exemplo com `curl`**:
+    ```sh
+    curl -X POST --data-binary "@/caminho/para/seu/arquivo.jpg" \
+      -H "Content-Type: image/jpeg" \
+      http://localhost:5000/upload/stream/seu-bucket/nome-do-arquivo.jpg
+    ```
+
+#### 2. Upload via Formulário (`IFormFile`)
+
+-   **Endpoint**: `POST /upload/form/{bucketName}`
+-   **Descrição**: Este endpoint utiliza o padrão `multipart/form-data`, o que o torna ideal para uploads a partir de formulários web. Ele aceita um parâmetro `IFormFile`. A implementação garante alta performance ao ler o arquivo como um stream, sem bufferizá-lo por completo em memória.
+-   **Caso de Uso**: Perfeito para aplicações web (React, Angular, Blazor, etc.) que enviam arquivos através de um `<input type="file">`.
+-   **Exemplo com `curl`**:
+    ```sh
+    curl -X POST -F "file=@/caminho/para/seu/arquivo.jpg" \
+      http://localhost:5000/upload/form/seu-bucket
+    ```
+
+### Download
+
+#### Download Direto via Stream
+
+-   **Endpoint**: `GET /download/{bucketName}/{objectName}`
+-   **Descrição**: Realiza o download de um arquivo do GCS, transmitindo-o diretamente para o cliente. Esta abordagem é altamente performática e ideal para servir arquivos de qualquer tamanho.
+-   **Caso de Uso**: Servir arquivos para download em uma aplicação web ou para outros serviços.
+
+## Como Executar
+
+### Pré-requisitos
+
+-   [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+-   Credenciais do Google Cloud configuradas (via `gcloud auth application-default login` para desenvolvimento local).
+
 ### Executando a API
 
 1.  Navegue até o diretório `src/SignedUrlGcs.Api`.

@@ -44,6 +44,7 @@ builder.Services.AddSingleton(provider =>
     return StorageClient.Create(credential);
 });
 builder.Services.AddSingleton<SignedUrlGcs.Api.Services.GcsUploaderService>();
+builder.Services.AddSingleton<SignedUrlGcs.Api.Services.GcsDownloaderService>();
 
 
 var app = builder.Build();
