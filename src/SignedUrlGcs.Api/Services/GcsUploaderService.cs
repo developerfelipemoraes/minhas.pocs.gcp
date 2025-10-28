@@ -1,28 +1,27 @@
 
 using Google.Cloud.Storage.V1;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
+using System;
 using System.Threading.Tasks;
 
 namespace SignedUrlGcs.Api.Services
 {
     public class GcsUploaderService
     {
-        private readonly StorageClient _storageClient;
+        private readonly UrlSigner _urlSigner;
         private readonly HttpClient _httpClient;
 
-        public GcsUploaderService()
+        public GcsUploaderService(UrlSigner urlSigner, HttpClient httpClient)
         {
-            _storageClient = StorageClient.Create();
-            _httpClient = new HttpClient();
+            _urlSigner = urlSigner;
+            _httpClient = httpClient;
         }
 
         public async Task<double> UploadStreamWithSignedUrlAsync(Stream fileStream, string bucketName, string objectName)
         {
-            // IMPORTANT: Replace with the actual path to your Google Cloud credentials file.
-            var urlSigner = UrlSigner.FromCredentialFile("service-account-credentials.json");
-
-            var signedUrl = await urlSigner.SignAsync(
+            var signedUrl = await _urlSigner.SignAsync(
                 bucketName,
                 objectName,
                 TimeSpan.FromMinutes(15),

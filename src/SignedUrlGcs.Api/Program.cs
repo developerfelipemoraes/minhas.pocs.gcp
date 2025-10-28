@@ -1,10 +1,18 @@
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<UrlSigner>(_ =>
-    UrlSigner.FromCredentialFile("gcs-signer.json"));
+// Create a singleton GoogleCredential
+builder.Services.AddSingleton(GoogleCredential.GetApplicationDefault());
+
+builder.Services.AddSingleton<UrlSigner>(provider =>
+{
+    var credential = provider.GetRequiredService<GoogleCredential>();
+    return UrlSigner.FromCredential(credential);
+});
+
 
 // CORS para a SPA (ajuste origins conforme necessário)
 builder.Services.AddCors(opts =>
@@ -17,6 +25,7 @@ builder.Services.AddCors(opts =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -29,7 +38,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // StorageClient via ADC (GKE Workload Identity, gcloud ADC, etc.)
-builder.Services.AddSingleton(StorageClient.Create());
+builder.Services.AddSingleton(provider =>
+{
+    var credential = provider.GetRequiredService<GoogleCredential>();
+    return StorageClient.Create(credential);
+});
+builder.Services.AddSingleton<SignedUrlGcs.Api.Services.GcsUploaderService>();
+
 
 var app = builder.Build();
 
