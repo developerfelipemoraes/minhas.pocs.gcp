@@ -1,0 +1,125 @@
+{
+  "Version": 1,
+  "Hash": "LIi1Kni09UkzlaDzqZQOwB9IEhJJoOQglrHWH+KhAsw=",
+  "Source": "OracleIDE",
+  "BasePath": "_content/OracleIDE",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "OracleIDE\\wwwroot",
+      "Source": "OracleIDE",
+      "ContentRoot": "C:\\Users\\Felipe\\Downloads\\OracleIDE\\oracle-ide\\wwwroot\\",
+      "BasePath": "_content/OracleIDE",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Felipe\\Downloads\\OracleIDE\\oracle-ide\\wwwroot\\index.html",
+      "SourceId": "OracleIDE",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Felipe\\Downloads\\OracleIDE\\oracle-ide\\wwwroot\\",
+      "BasePath": "_content/OracleIDE",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ehln5uy6o5",
+      "Integrity": "gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "index.ehln5uy6o5.html",
+      "AssetFile": "C:\\Users\\Felipe\\Downloads\\OracleIDE\\oracle-ide\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39311"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 10 Feb 2026 12:55:51 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ehln5uy6o5"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\Felipe\\Downloads\\OracleIDE\\oracle-ide\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39311"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 10 Feb 2026 12:55:51 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658="
+        }
+      ]
+    }
+  ]
+}
