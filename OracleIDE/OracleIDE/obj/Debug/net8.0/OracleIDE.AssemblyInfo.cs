@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OracleIDE")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6bc20293f0805aeb6a88a3d9639c45937b0183eb")]
 [assembly: System.Reflection.AssemblyProductAttribute("OracleIDE")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OracleIDE")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|OracleIDE\\OracleIDE.csproj|c:\\users\\felipe\\downloads\\oracleide (1)\\oracleide\\oracleide\\models\\models.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|OracleIDE\\OracleIDE.csproj|solutionrelative:oracleide\\models\\models.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|OracleIDE\\OracleIDE.csproj|c:\\users\\felipe\\downloads\\oracleide (1)\\oracleide\\oracleide\\controllers\\databasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|OracleIDE\\OracleIDE.csproj|solutionrelative:oracleide\\controllers\\databasecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +18,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Models.cs",
+              "DocumentMoniker": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\Models\\Models.cs",
+              "RelativeDocumentMoniker": "OracleIDE\\Models\\Models.cs",
+              "ToolTip": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\Models\\Models.cs",
+              "RelativeToolTip": "OracleIDE\\Models\\Models.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T13:12:57.977Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DatabaseController.cs",
+              "DocumentMoniker": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\Controllers\\DatabaseController.cs",
+              "RelativeDocumentMoniker": "OracleIDE\\Controllers\\DatabaseController.cs",
+              "ToolTip": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\Controllers\\DatabaseController.cs",
+              "RelativeToolTip": "OracleIDE\\Controllers\\DatabaseController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T13:12:54.359Z",
+              "EditorCaption": ""
             }
           ]
         }

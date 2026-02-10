@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\OracleIDE.csproj": {}
+    "C:\\Users\\Felipe\\source\\repos\\minhas.pocs.gcp\\OracleIDE\\OracleIDE\\OracleIDE.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\OracleIDE.csproj": {
+    "C:\\Users\\Felipe\\source\\repos\\minhas.pocs.gcp\\OracleIDE\\OracleIDE\\OracleIDE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\OracleIDE.csproj",
+        "projectUniqueName": "C:\\Users\\Felipe\\source\\repos\\minhas.pocs.gcp\\OracleIDE\\OracleIDE\\OracleIDE.csproj",
         "projectName": "OracleIDE",
-        "projectPath": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\OracleIDE.csproj",
+        "projectPath": "C:\\Users\\Felipe\\source\\repos\\minhas.pocs.gcp\\OracleIDE\\OracleIDE\\OracleIDE.csproj",
         "packagesPath": "C:\\Users\\Felipe\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Felipe\\Downloads\\OracleIDE (1)\\OracleIDE\\OracleIDE\\obj\\",
+        "outputPath": "C:\\Users\\Felipe\\source\\repos\\minhas.pocs.gcp\\OracleIDE\\OracleIDE\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

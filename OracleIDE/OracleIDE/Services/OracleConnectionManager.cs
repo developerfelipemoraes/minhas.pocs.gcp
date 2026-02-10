@@ -17,8 +17,10 @@ public class OracleConnectionManager : IDisposable
         {
             Disconnect();
 
-            _connectionString = $"User Id={user};Password={password};Data Source={host}:{port}/{serviceName};Connection Timeout=15;";
+            _connectionString =  $"User Id={user};Password={password};Data Source=//{host}:{port}/{serviceName};Connection Timeout=15;";
+
             _connection = new OracleConnection(_connectionString);
+            
             await _connection.OpenAsync();
 
             using var cmd = _connection.CreateCommand();
