@@ -1,0 +1,16 @@
+﻿<Project>
+  <ItemGroup>
+    <StaticWebAssetEndpoint Include="_content/OracleIDE/index.ehln5uy6o5.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"ehln5uy6o5"},{"Name":"integrity","Value":"sha256-gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658="},{"Name":"label","Value":"_content/OracleIDE/index.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"39311"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658=\u0022"},{"Name":"Last-Modified","Value":"Tue, 10 Feb 2026 13:12:17 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/OracleIDE/index.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"39311"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022gslx802oSytuUi2Zt7e/qPnNR3WkIRf9pFkt9X7I658=\u0022"},{"Name":"Last-Modified","Value":"Tue, 10 Feb 2026 13:12:17 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+  </ItemGroup>
+</Project>

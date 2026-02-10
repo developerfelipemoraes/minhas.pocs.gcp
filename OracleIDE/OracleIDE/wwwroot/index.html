@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle IDE — .NET Core Managed Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #1c2333;
+            --bg-card: #1a1f2e;
+            --border: #30363d;
+            --border-focus: #f0883e;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #484f58;
+            --accent: #f0883e;
+            --accent-hover: #f79b57;
+            --accent-glow: rgba(240, 136, 62, 0.15);
+            --success: #3fb950;
+            --error: #f85149;
+            --warning: #d29922;
+            --info: #58a6ff;
+            --sql-keyword: #ff7b72;
+            --sql-string: #a5d6ff;
+            --sql-number: #79c0ff;
+            --sql-comment: #8b949e;
+            --sql-function: #d2a8ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .header-left { display: flex; align-items: center; gap: 14px; }
+        .logo {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent), #e05535);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; font-size: 16px; color: white;
+            box-shadow: 0 2px 12px rgba(240,136,62,0.3);
+        }
+        .header-title { font-weight: 700; font-size: 16px; letter-spacing: -0.3px; }
+        .header-title span { color: var(--text-secondary); font-weight: 400; font-size: 13px; margin-left: 8px; }
+
+        .connection-status {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: var(--text-secondary);
+            padding: 6px 12px; border-radius: 20px;
+            background: var(--bg-tertiary); border: 1px solid var(--border);
+        }
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--text-muted); transition: all 0.3s ease;
+        }
+        .status-dot.connected { background: var(--success); box-shadow: 0 0 8px rgba(63,185,80,0.5); }
+        .status-dot.error { background: var(--error); box-shadow: 0 0 8px rgba(248,81,73,0.5); }
+
+        /* ===== CONNECTION PANEL ===== */
+        .connection-panel {
+            background: var(--bg-secondary); border-bottom: 1px solid var(--border);
+            overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease;
+            max-height: 0; padding: 0 24px; flex-shrink: 0;
+        }
+        .connection-panel.open { max-height: 300px; padding: 16px 24px; }
+        .conn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px; }
+        .field-group { display: flex; flex-direction: column; gap: 4px; }
+        .field-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .field-group input {
+            background: var(--bg-tertiary); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 12px; color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .field-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .conn-actions { display: flex; gap: 10px; align-items: center; }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 13px;
+            border: none; border-radius: 8px; padding: 8px 18px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(240,136,62,0.3); }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover:not(:disabled) { border-color: var(--text-secondary); background: var(--bg-card); }
+        .btn-danger { background: transparent; color: var(--error); border: 1px solid var(--error); }
+        .btn-danger:hover { background: rgba(248,81,73,0.1); }
+        .btn-icon {
+            width: 34px; height: 34px; padding: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; background: var(--bg-tertiary);
+            border: 1px solid var(--border); color: var(--text-secondary);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 24px; background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border); flex-shrink: 0;
+        }
+        .toolbar-left { display: flex; gap: 6px; }
+        .toolbar-right { display: flex; align-items: center; gap: 12px; }
+        .exec-time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+        /* ===== TEMPLATES ===== */
+        .templates-bar {
+            display: flex; gap: 6px; padding: 8px 24px;
+            background: var(--bg-primary); border-bottom: 1px solid var(--border);
+            overflow-x: auto; flex-shrink: 0;
+        }
+        .template-chip {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            padding: 4px 10px; border-radius: 6px;
+            background: var(--bg-tertiary); border: 1px solid var(--border);
+            color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: all 0.15s;
+        }
+        .template-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+        /* ===== EDITOR ===== */
+        .editor-container { position: relative; flex: 0 0 40%; min-height: 120px; border-bottom: 3px solid var(--border); }
+        .editor-gutter {
+            position: absolute; top: 0; left: 0; width: 48px; height: 100%;
+            background: var(--bg-secondary); border-right: 1px solid var(--border);
+            padding-top: 16px; z-index: 2; overflow: hidden;
+        }
+        .line-number {
+            font-family: 'JetBrains Mono', monospace; font-size: 12px;
+            color: var(--text-muted); text-align: right; padding-right: 12px;
+            height: 21px; line-height: 21px;
+        }
+        .editor-textarea {
+            width: 100%; height: 100%; background: var(--bg-primary);
+            color: var(--text-primary); font-family: 'JetBrains Mono', monospace;
+            font-size: 14px; line-height: 21px; padding: 16px 16px 16px 60px;
+            border: none; outline: none; resize: none; tab-size: 2;
+            white-space: pre; overflow: auto;
+        }
+        .editor-textarea::placeholder { color: var(--text-muted); }
+
+        /* ===== RESIZE ===== */
+        .resize-handle { height: 3px; background: var(--border); cursor: ns-resize; flex-shrink: 0; }
+        .resize-handle:hover, .resize-handle.active { background: var(--accent); }
+
+        /* ===== RESULTS ===== */
+        .results-container { flex: 1; display: flex; flex-direction: column; min-height: 0; background: var(--bg-primary); }
+        .results-tabs {
+            display: flex; align-items: center; gap: 0;
+            background: var(--bg-secondary); border-bottom: 1px solid var(--border);
+            flex-shrink: 0; padding: 0 16px;
+        }
+        .tab {
+            font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+            color: var(--text-secondary); padding: 10px 16px; cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none;
+        }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 18px; height: 18px; border-radius: 9px;
+            background: var(--bg-tertiary); font-size: 10px; margin-left: 6px;
+            padding: 0 5px; font-family: 'JetBrains Mono', monospace;
+        }
+        .tab.active .tab-badge { background: var(--accent-glow); color: var(--accent); }
+        .results-body { flex: 1; overflow: auto; padding: 0; }
+
+        /* ===== DATA GRID ===== */
+        .data-grid { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-grid th {
+            position: sticky; top: 0; background: var(--bg-secondary);
+            color: var(--text-secondary); font-weight: 600; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px;
+            text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; z-index: 1;
+        }
+        .data-grid td {
+            padding: 8px 14px; border-bottom: 1px solid rgba(48,54,61,0.4);
+            font-family: 'JetBrains Mono', monospace; font-size: 12px;
+            white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis;
+        }
+        .data-grid tr:hover td { background: var(--accent-glow); }
+        .data-grid td.null-value { color: var(--text-muted); font-style: italic; }
+        .data-grid td.number-value { color: var(--sql-number); text-align: right; }
+
+        /* ===== MESSAGES ===== */
+        .messages-panel { padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; }
+        .msg-line { display: flex; gap: 10px; padding: 2px 0; }
+        .msg-time { color: var(--text-muted); flex-shrink: 0; }
+        .msg-text { color: var(--text-secondary); }
+        .msg-text.success { color: var(--success); }
+        .msg-text.error { color: var(--error); }
+        .msg-text.warning { color: var(--warning); }
+        .msg-text.info { color: var(--info); }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; color: var(--text-muted); gap: 12px; padding: 40px;
+        }
+        .empty-state svg { opacity: 0.3; }
+        .empty-state p { font-size: 13px; }
+        .empty-state kbd {
+            background: var(--bg-tertiary); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 6px;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+        }
+
+        /* ===== HISTORY ===== */
+        .history-sidebar {
+            position: fixed; right: -360px; top: 0; bottom: 0; width: 360px;
+            background: var(--bg-secondary); border-left: 1px solid var(--border);
+            z-index: 100; transition: right 0.3s ease; display: flex; flex-direction: column;
+        }
+        .history-sidebar.open { right: 0; }
+        .history-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+        }
+        .history-header h3 { font-size: 14px; font-weight: 600; }
+        .history-list { flex: 1; overflow-y: auto; padding: 8px; }
+        .history-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; }
+        .history-item:hover { background: var(--bg-tertiary); }
+        .history-item-sql {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .history-item-meta { font-size: 10px; color: var(--text-muted); margin-top: 4px; display: flex; gap: 8px; }
+        .history-item-status { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; }
+        .history-item-status.ok { background: var(--success); }
+        .history-item-status.fail { background: var(--error); }
+
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+        .overlay.show { display: block; }
+
+        /* ===== CODE GEN ===== */
+        .code-info { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px; }
+        .code-info h4 { font-size: 13px; margin-bottom: 12px; color: var(--accent); }
+        .code-info pre {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.6;
+            color: var(--text-secondary); background: var(--bg-primary);
+            padding: 14px; border-radius: 8px; overflow-x: auto; white-space: pre;
+        }
+        .code-info pre .kw { color: var(--sql-keyword); }
+        .code-info pre .str { color: var(--sql-string); }
+        .code-info pre .cm { color: var(--sql-comment); }
+        .code-info pre .fn { color: var(--sql-function); }
+        .code-info .copy-btn {
+            float: right; font-size: 11px; padding: 4px 10px; border-radius: 6px;
+            background: var(--bg-tertiary); border: 1px solid var(--border);
+            color: var(--text-secondary); cursor: pointer;
+        }
+        .code-info .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+        /* ===== LOADING SPINNER ===== */
+        .spinner {
+            display: inline-block; width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+        .loading .status-dot { animation: pulse 1s infinite; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">Oq</div>
+            <div class="header-title">
+                Oracle Query IDE
+                <span>Managed Driver • Sem Client</span>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <div class="connection-status" id="connStatus">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Desconectado</span>
+            </div>
+            <button class="btn-icon" onclick="toggleConnection()" title="Configurar Conexão">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </button>
+            <button class="btn-icon" onclick="toggleHistory()" title="Histórico">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- CONNECTION PANEL -->
+    <div class="connection-panel" id="connPanel">
+        <div class="conn-grid">
+            <div class="field-group">
+                <label>Host</label>
+                <input type="text" id="dbHost" value="localhost" placeholder="ex: 192.168.1.100">
+            </div>
+            <div class="field-group">
+                <label>Porta</label>
+                <input type="text" id="dbPort" value="1521" placeholder="1521">
+            </div>
+            <div class="field-group">
+                <label>Service Name</label>
+                <input type="text" id="dbService" placeholder="ex: ORCL ou XE">
+            </div>
+            <div class="field-group">
+                <label>Usuário</label>
+                <input type="text" id="dbUser" placeholder="ex: HR">
+            </div>
+            <div class="field-group">
+                <label>Senha</label>
+                <input type="password" id="dbPassword" placeholder="••••••••">
+            </div>
+        </div>
+        <div class="conn-actions">
+            <button class="btn btn-primary" id="btnConnect" onclick="apiConnect()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Conectar
+            </button>
+            <button class="btn btn-secondary" id="btnTest" onclick="apiTest()">Testar Conexão</button>
+            <button class="btn btn-danger" onclick="apiDisconnect()">Desconectar</button>
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <button class="btn btn-primary" id="btnExec" onclick="apiExecute()" title="Executar (F5 ou Ctrl+Enter)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Executar
+            </button>
+            <button class="btn btn-secondary" onclick="clearEditor()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                Limpar
+            </button>
+            <button class="btn btn-secondary" onclick="formatSQL()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10H3M21 6H3M21 14H3M21 18H3"/></svg>
+                Formatar
+            </button>
+        </div>
+        <div class="toolbar-right">
+            <span class="exec-time" id="execTime"></span>
+        </div>
+    </div>
+
+    <!-- TEMPLATES -->
+    <div class="templates-bar">
+        <div class="template-chip" onclick="insertTemplate('select')">SELECT</div>
+        <div class="template-chip" onclick="insertTemplate('update')">UPDATE</div>
+        <div class="template-chip" onclick="insertTemplate('insert')">INSERT</div>
+        <div class="template-chip" onclick="insertTemplate('delete')">DELETE</div>
+        <div class="template-chip" onclick="insertTemplate('create')">CREATE TABLE</div>
+        <div class="template-chip" onclick="insertTemplate('alter')">ALTER TABLE</div>
+        <div class="template-chip" onclick="insertTemplate('tables')">Listar Tabelas</div>
+        <div class="template-chip" onclick="insertTemplate('columns')">Colunas da Tabela</div>
+        <div class="template-chip" onclick="insertTemplate('count')">COUNT</div>
+        <div class="template-chip" onclick="insertTemplate('sysdate')">SYSDATE</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="editor-container" id="editorContainer">
+            <div class="editor-gutter" id="gutter"></div>
+            <textarea class="editor-textarea" id="sqlEditor"
+                placeholder="-- Escreva seu SQL aqui...&#10;-- Ctrl+Enter ou F5 para executar&#10;&#10;SELECT * FROM dual"
+                spellcheck="false"></textarea>
+        </div>
+        <div class="resize-handle" id="resizeHandle"></div>
+        <div class="results-container">
+            <div class="results-tabs">
+                <div class="tab active" data-tab="results" onclick="switchTab('results')">
+                    Resultados <span class="tab-badge" id="rowCount">0</span>
+                </div>
+                <div class="tab" data-tab="messages" onclick="switchTab('messages')">
+                    Mensagens <span class="tab-badge" id="msgCount">0</span>
+                </div>
+                <div class="tab" data-tab="codegen" onclick="switchTab('codegen')">
+                    Código .NET
+                </div>
+            </div>
+            <div class="results-body" id="resultsBody">
+                <div class="empty-state" id="emptyState">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                    <p>Execute uma query para ver os resultados</p>
+                    <p><kbd>Ctrl</kbd> + <kbd>Enter</kbd> ou <kbd>F5</kbd></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="overlay" id="overlay" onclick="toggleHistory()"></div>
+    <div class="history-sidebar" id="historySidebar">
+        <div class="history-header">
+            <h3>Histórico de Queries</h3>
+            <button class="btn-icon" onclick="toggleHistory()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="history-list" id="historyList">
+            <div class="empty-state" style="padding:40px 20px"><p>Nenhuma query executada ainda</p></div>
+        </div>
+    </div>
+
+<script>
+// ============================
+// STATE
+// ============================
+let isConnected = false;
+let queryHistory = [];
+let messages = [];
+let currentResults = null;
+let activeTab = 'results';
+let msgCounter = 0;
+let isExecuting = false;
+
+const editor = document.getElementById('sqlEditor');
+const gutter = document.getElementById('gutter');
+
+// ============================
+// API CALLS
+// ============================
+async function apiCall(url, body) {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+}
+
+function getConnFields() {
+    return {
+        host: document.getElementById('dbHost').value,
+        port: document.getElementById('dbPort').value,
+        serviceName: document.getElementById('dbService').value,
+        user: document.getElementById('dbUser').value,
+        password: document.getElementById('dbPassword').value
+    };
+}
+
+async function apiConnect() {
+    const btn = document.getElementById('btnConnect');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Conectando...';
+    btn.disabled = true;
+    document.getElementById('connStatus').classList.add('loading');
+    document.getElementById('statusText').textContent = 'Conectando...';
+
+    try {
+        const data = await apiCall('/api/database/connect', getConnFields());
+        if (data.success) {
+            isConnected = true;
+            document.getElementById('statusDot').className = 'status-dot connected';
+            const f = getConnFields();
+            document.getElementById('statusText').textContent = `${f.user}@${f.host}:${f.port}/${f.serviceName}`;
+            document.getElementById('connPanel').classList.remove('open');
+            addMessage(`${data.message}`, 'success');
+            if (data.serverVersion) addMessage(`Servidor: ${data.serverVersion}`, 'info');
+        } else {
+            document.getElementById('statusDot').className = 'status-dot error';
+            document.getElementById('statusText').textContent = 'Erro';
+            addMessage(data.message, 'error');
+        }
+    } catch (e) {
+        document.getElementById('statusDot').className = 'status-dot error';
+        document.getElementById('statusText').textContent = 'Erro';
+        addMessage(`Erro de rede: ${e.message}`, 'error');
+    } finally {
+        btn.innerHTML = orig;
+        btn.disabled = false;
+        document.getElementById('connStatus').classList.remove('loading');
+    }
+}
+
+async function apiTest() {
+    const btn = document.getElementById('btnTest');
+    const orig = btn.textContent;
+    btn.textContent = 'Testando...';
+    btn.disabled = true;
+    addMessage('Testando conexão...', 'info');
+
+    try {
+        const data = await apiCall('/api/database/test', getConnFields());
+        addMessage(data.message, data.success ? 'success' : 'error');
+    } catch (e) {
+        addMessage(`Erro de rede: ${e.message}`, 'error');
+    } finally {
+        btn.textContent = orig;
+        btn.disabled = false;
+    }
+}
+
+async function apiDisconnect() {
+    try {
+        await apiCall('/api/database/disconnect', {});
+    } catch(e) {}
+    isConnected = false;
+    document.getElementById('statusDot').className = 'status-dot';
+    document.getElementById('statusText').textContent = 'Desconectado';
+    addMessage('Desconectado do banco de dados', 'warning');
+}
+
+async function apiExecute() {
+    const sql = editor.value.trim();
+    if (!sql) { addMessage('Nenhum SQL para executar', 'warning'); return; }
+    if (!isConnected) { addMessage('Não conectado. Configure a conexão primeiro.', 'error'); toggleConnection(); return; }
+    if (isExecuting) return;
+
+    isExecuting = true;
+    const btn = document.getElementById('btnExec');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Executando...';
+    btn.disabled = true;
+    document.getElementById('execTime').textContent = '...';
+
+    try {
+        const data = await apiCall('/api/database/execute', { sql });
+
+        document.getElementById('execTime').textContent = `${data.elapsedMs}ms`;
+
+        // Add to history
+        queryHistory.unshift({ sql, time: new Date().toLocaleTimeString('pt-BR'), date: new Date().toLocaleDateString('pt-BR'), success: data.success });
+        renderHistory();
+
+        if (data.success) {
+            addMessage(data.message, 'success');
+            if (data.queryType === 'SELECT' && data.columns.length > 0) {
+                currentResults = { columns: data.columns, rows: data.rows };
+                renderResults(currentResults);
+                document.getElementById('rowCount').textContent = data.rows.length;
+            } else {
+                currentResults = null;
+                renderNoData(data.message);
+                document.getElementById('rowCount').textContent = data.rowsAffected || 0;
+            }
+        } else {
+            addMessage(data.message, 'error');
+            currentResults = null;
+            renderError(data.message);
+            document.getElementById('rowCount').textContent = 0;
+        }
+
+        switchTab('results');
+    } catch (e) {
+        addMessage(`Erro de rede: ${e.message}`, 'error');
+        renderError(`Erro de rede: ${e.message}`);
+    } finally {
+        btn.innerHTML = orig;
+        btn.disabled = false;
+        isExecuting = false;
+    }
+}
+
+// ============================
+// LINE NUMBERS
+// ============================
+function updateLineNumbers() {
+    const lines = editor.value.split('\n').length;
+    let html = '';
+    for (let i = 1; i <= Math.max(lines, 20); i++) html += `<div class="line-number">${i}</div>`;
+    gutter.innerHTML = html;
+}
+editor.addEventListener('input', updateLineNumbers);
+editor.addEventListener('scroll', () => { gutter.style.transform = `translateY(-${editor.scrollTop}px)`; });
+updateLineNumbers();
+
+// ============================
+// KEYBOARD SHORTCUTS
+// ============================
+editor.addEventListener('keydown', (e) => {
+    if (e.key === 'F5' || (e.ctrlKey && e.key === 'Enter')) { e.preventDefault(); apiExecute(); }
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const s = editor.selectionStart;
+        editor.value = editor.value.substring(0, s) + '  ' + editor.value.substring(editor.selectionEnd);
+        editor.selectionStart = editor.selectionEnd = s + 2;
+    }
+});
+
+// ============================
+// RENDER
+// ============================
+function renderResults(data) {
+    const body = document.getElementById('resultsBody');
+    let html = '<table class="data-grid fade-in"><thead><tr>';
+    data.columns.forEach(c => html += `<th>${esc(c)}</th>`);
+    html += '</tr></thead><tbody>';
+    data.rows.forEach(row => {
+        html += '<tr>';
+        row.forEach(cell => {
+            if (cell === null || cell === undefined)
+                html += '<td class="null-value">NULL</td>';
+            else if (!isNaN(cell) && cell !== '')
+                html += `<td class="number-value">${esc(String(cell))}</td>`;
+            else
+                html += `<td>${esc(String(cell))}</td>`;
+        });
+        html += '</tr>';
+    });
+    html += '</tbody></table>';
+    body.innerHTML = html;
+}
+
+function renderNoData(message) {
+    document.getElementById('resultsBody').innerHTML = `
+        <div class="empty-state fade-in">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <p style="color:var(--success)">${esc(message)}</p>
+        </div>`;
+}
+
+function renderError(message) {
+    document.getElementById('resultsBody').innerHTML = `
+        <div class="empty-state fade-in">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <p style="color:var(--error);max-width:600px;text-align:center;word-break:break-word;">${esc(message)}</p>
+        </div>`;
+}
+
+// ============================
+// MESSAGES
+// ============================
+function addMessage(text, type = 'info') {
+    msgCounter++;
+    messages.push({ time: new Date().toLocaleTimeString('pt-BR'), text, type });
+    document.getElementById('msgCount').textContent = msgCounter;
+    if (activeTab === 'messages') renderMessages();
+}
+
+function renderMessages() {
+    const body = document.getElementById('resultsBody');
+    let html = '<div class="messages-panel fade-in">';
+    messages.forEach(m => {
+        html += `<div class="msg-line"><span class="msg-time">${m.time}</span><span class="msg-text ${m.type}">${esc(m.text)}</span></div>`;
+    });
+    html += '</div>';
+    body.innerHTML = html;
+    body.scrollTop = body.scrollHeight;
+}
+
+// ============================
+// CODE GEN
+// ============================
+function renderCodeGen() {
+    const sql = editor.value.trim() || 'SELECT * FROM minha_tabela WHERE id = :id';
+    const f = getConnFields();
+    const isSelect = sql.toUpperCase().trimStart().startsWith('SELECT') || sql.toUpperCase().trimStart().startsWith('WITH');
+    const body = document.getElementById('resultsBody');
+
+    const execCode = isSelect
+        ? `<span class="kw">using var</span> reader = <span class="kw">await</span> cmd.<span class="fn">ExecuteReaderAsync</span>();
+<span class="kw">while</span> (<span class="kw">await</span> reader.<span class="fn">ReadAsync</span>())
+{
+    Console.<span class="fn">WriteLine</span>(reader.<span class="fn">GetString</span>(0));
+}`
+        : `<span class="kw">var</span> rows = <span class="kw">await</span> cmd.<span class="fn">ExecuteNonQueryAsync</span>();
+Console.<span class="fn">WriteLine</span>(<span class="str">$"Linhas afetadas: {rows}"</span>);`;
+
+    body.innerHTML = `
+        <div class="code-info fade-in">
+            <h4>
+                📦 Código .NET Core — Oracle.ManagedDataAccess.Core (sem Oracle Client)
+                <button class="copy-btn" onclick="copyCode()">Copiar</button>
+            </h4>
+            <pre id="codeBlock"><span class="cm">// NuGet: dotnet add package Oracle.ManagedDataAccess.Core</span>
+
+<span class="kw">using</span> Oracle.ManagedDataAccess.Client;
+
+<span class="kw">var</span> connStr = <span class="str">"User Id=${f.user || 'usuario'};"</span>
+           + <span class="str">"Password=****;"</span>
+           + <span class="str">"Data Source=${f.host || 'host'}:${f.port || '1521'}/${f.serviceName || 'service_name'}"</span>;
+
+<span class="kw">using var</span> conn = <span class="kw">new</span> <span class="fn">OracleConnection</span>(connStr);
+<span class="kw">await</span> conn.<span class="fn">OpenAsync</span>();
+
+<span class="kw">var</span> sql = <span class="str">@"${esc(sql)}"</span>;
+
+<span class="kw">using var</span> cmd = <span class="kw">new</span> <span class="fn">OracleCommand</span>(sql, conn);
+<span class="cm">// cmd.Parameters.Add(new OracleParameter("id", 1));</span>
+
+${execCode}</pre>
+        </div>`;
+}
+
+function copyCode() {
+    const code = document.getElementById('codeBlock').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copiado!';
+        setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
+}
+
+// ============================
+// TABS
+// ============================
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+    if (tab === 'results') {
+        if (currentResults) renderResults(currentResults);
+        else document.getElementById('resultsBody').innerHTML = '<div class="empty-state"><p>Nenhum resultado. Execute uma query SELECT.</p></div>';
+    } else if (tab === 'messages') renderMessages();
+    else if (tab === 'codegen') renderCodeGen();
+}
+
+// ============================
+// TEMPLATES
+// ============================
+const templates = {
+    select: "SELECT *\nFROM tabela\nWHERE 1=1\nORDER BY id",
+    update: "UPDATE tabela\nSET coluna = 'novo_valor'\nWHERE id = 1",
+    insert: "INSERT INTO tabela (coluna1, coluna2, coluna3)\nVALUES ('valor1', 'valor2', 'valor3')",
+    delete: "DELETE FROM tabela\nWHERE id = 1",
+    create: "CREATE TABLE nova_tabela (\n  id NUMBER GENERATED ALWAYS AS IDENTITY,\n  nome VARCHAR2(100) NOT NULL,\n  criado_em DATE DEFAULT SYSDATE,\n  CONSTRAINT pk_nova_tabela PRIMARY KEY (id)\n)",
+    alter: "ALTER TABLE tabela\nADD (nova_coluna VARCHAR2(50))",
+    tables: "SELECT table_name, tablespace_name, num_rows, status\nFROM user_tables\nORDER BY table_name",
+    columns: "SELECT column_name, data_type, nullable, data_length\nFROM user_tab_columns\nWHERE table_name = 'NOME_DA_TABELA'\nORDER BY column_id",
+    count: "SELECT COUNT(*) AS total\nFROM tabela\nWHERE 1=1",
+    sysdate: "SELECT SYSDATE, SYSTIMESTAMP, USER FROM dual"
+};
+
+function insertTemplate(type) {
+    editor.value = templates[type] || '';
+    updateLineNumbers();
+    editor.focus();
+}
+
+// ============================
+// HISTORY
+// ============================
+function toggleHistory() {
+    document.getElementById('historySidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('show');
+}
+
+function renderHistory() {
+    const list = document.getElementById('historyList');
+    if (!queryHistory.length) {
+        list.innerHTML = '<div class="empty-state" style="padding:40px 20px"><p>Nenhuma query executada ainda</p></div>';
+        return;
+    }
+    list.innerHTML = queryHistory.map((item, i) => `
+        <div class="history-item" onclick="loadFromHistory(${i})">
+            <div class="history-item-sql"><span class="history-item-status ${item.success ? 'ok' : 'fail'}"></span>${esc(item.sql)}</div>
+            <div class="history-item-meta"><span>${item.time}</span><span>${item.date}</span></div>
+        </div>`).join('');
+}
+
+function loadFromHistory(i) {
+    editor.value = queryHistory[i].sql;
+    updateLineNumbers();
+    toggleHistory();
+    editor.focus();
+}
+
+// ============================
+// UTILS
+// ============================
+function toggleConnection() { document.getElementById('connPanel').classList.toggle('open'); }
+
+function clearEditor() { editor.value = ''; updateLineNumbers(); editor.focus(); }
+
+function formatSQL() {
+    let sql = editor.value.replace(/\s+/g, ' ').trim();
+    ['SELECT','FROM','WHERE','AND','OR','ORDER BY','GROUP BY','HAVING','JOIN','LEFT JOIN','RIGHT JOIN',
+     'INNER JOIN','OUTER JOIN','ON','INSERT INTO','VALUES','UPDATE','SET','DELETE FROM',
+     'CREATE TABLE','ALTER TABLE','DROP TABLE','UNION','UNION ALL','FETCH FIRST','WITH']
+    .forEach(kw => { sql = sql.replace(new RegExp('\\b' + kw.replace(/ /g,'\\s+') + '\\b','gi'), '\n' + kw); });
+    editor.value = sql.trim();
+    updateLineNumbers();
+}
+
+function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+// Resize
+const resizeHandle = document.getElementById('resizeHandle');
+const editorContainer = document.getElementById('editorContainer');
+let isResizing = false;
+resizeHandle.addEventListener('mousedown', () => { isResizing = true; resizeHandle.classList.add('active'); document.body.style.cssText = 'cursor:ns-resize;user-select:none'; });
+document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    const mc = document.querySelector('.main-content');
+    const r = mc.getBoundingClientRect();
+    const pct = ((e.clientY - r.top) / r.height) * 100;
+    editorContainer.style.flex = `0 0 ${Math.min(Math.max(pct, 15), 80)}%`;
+});
+document.addEventListener('mouseup', () => { isResizing = false; resizeHandle.classList.remove('active'); document.body.style.cssText = ''; });
+
+// Init
+addMessage('Oracle Query IDE iniciado. Configure sua conexão para começar.', 'info');
+</script>
+</body>
+</html>
