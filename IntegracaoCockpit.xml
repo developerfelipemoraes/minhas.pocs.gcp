@@ -1,0 +1,1006 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" version="29.6.0" pages="4">
+  <diagram name="Diagram 1" id="8PBL8oc_820pVQCU-4rU">
+    <mxGraphModel dx="2066" dy="1070" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="920" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontColor=#1a237e;" value="&lt;b&gt;Diagrama 1 — Worker Sender&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size: 10px; color: rgb(102, 102, 102);&quot;&gt;Busca de dados (Oracle + SQL Server) · Montagem do prontuário · Upload GCS · Autenticação · Notificação ao Cockpit via ApiGee&lt;/i&gt;" vertex="1">
+          <mxGeometry height="45" width="1460" x="80" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="p_wk" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333;fontSize=10;" value="&lt;b&gt;Background&lt;/b&gt;&lt;br&gt;Worker" vertex="1">
+          <mxGeometry height="42" width="125" x="55" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ora" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#333;fontSize=10;" value="&lt;b&gt;Oracle&lt;/b&gt;&lt;br&gt;Sistema Personal" vertex="1">
+          <mxGeometry height="52" width="130" x="240" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="p_sql" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;SQL Server&lt;/b&gt;&lt;br&gt;HealthMap" vertex="1">
+          <mxGeometry height="52" width="130" x="440" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="p_pack" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Pack CarePlus&lt;/b&gt;&lt;br&gt;.Infra.Service.Client" vertex="1">
+          <mxGeometry height="52" width="140" x="640" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="p_gcs" parent="1" style="shape=cylinder3;strokeColor=#4a90d9;fillColor=#cce5ff;fontColor=#333;fontSize=10;whiteSpace=wrap;html=1;" value="&lt;b&gt;GCS Bucket&lt;/b&gt;&lt;br&gt;careplus-prontuarios" vertex="1">
+          <mxGeometry height="52" width="140" x="855" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="p_auth" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Auth&lt;/b&gt;&lt;br&gt;Albert Einstein" vertex="1">
+          <mxGeometry height="42" width="130" x="1065" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="p_apigee" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;ApiGee&lt;/b&gt;&lt;br&gt;Gateway" vertex="1">
+          <mxGeometry height="42" width="130" x="1270" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="p_cockpit" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Cockpit&lt;/b&gt;&lt;br&gt;Albert Einstein" vertex="1">
+          <mxGeometry height="42" width="130" x="1470" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-1" edge="1" parent="1" style="edgeStyle=none;strokeColor=#82b366;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="117" y="107" as="sourcePoint" />
+            <mxPoint x="117" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-2" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d79b00;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305" y="110" as="sourcePoint" />
+            <mxPoint x="305" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-3" edge="1" parent="1" style="edgeStyle=none;strokeColor=#6c8ebf;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="505" y="110" as="sourcePoint" />
+            <mxPoint x="505" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-4" edge="1" parent="1" style="edgeStyle=none;strokeColor=#b85450;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="110" as="sourcePoint" />
+            <mxPoint x="710" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-5" edge="1" parent="1" style="edgeStyle=none;strokeColor=#4a90d9;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="925" y="110" as="sourcePoint" />
+            <mxPoint x="925" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-6" edge="1" parent="1" style="edgeStyle=none;strokeColor=#b85450;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1130" y="107" as="sourcePoint" />
+            <mxPoint x="1130" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-7" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1335" y="107" as="sourcePoint" />
+            <mxPoint x="1335" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-8" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1535" y="107" as="sourcePoint" />
+            <mxPoint x="1535" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-9" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;opacity=60;" value="" vertex="1">
+          <mxGeometry height="620" width="10" x="112" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-10" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;opacity=60;" value="" vertex="1">
+          <mxGeometry height="65" width="10" x="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-11" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;opacity=60;" value="" vertex="1">
+          <mxGeometry height="65" width="10" x="300" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-12" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;opacity=60;" value="" vertex="1">
+          <mxGeometry height="65" width="10" x="500" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-13" parent="1" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;opacity=60;" value="" vertex="1">
+          <mxGeometry height="90" width="10" x="705" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-14" parent="1" style="rounded=1;fillColor=#cce5ff;strokeColor=#4a90d9;opacity=60;" value="" vertex="1">
+          <mxGeometry height="55" width="10" x="920" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-15" parent="1" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;opacity=60;" value="" vertex="1">
+          <mxGeometry height="65" width="10" x="1125" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-16" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d6b656;opacity=60;" value="" vertex="1">
+          <mxGeometry height="120" width="10" x="1330" y="635" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-17" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;opacity=60;" value="" vertex="1">
+          <mxGeometry height="55" width="10" x="1530" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-18" parent="1" style="rounded=1;fillColor=none;strokeColor=#d79b00;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="335" width="960" x="42" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-19" parent="1" style="rounded=1;fillColor=#d79b00;strokeColor=#d79b00;fontColor=#fff;fontSize=9;fontStyle=1;" value="FASE 1 — BUSCA DE DADOS" vertex="1">
+          <mxGeometry height="16" width="145" x="42" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-20" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#d79b00;align=left;" value="[Worker consulta Oracle e SQL Server para obter beneficiários pendentes e seus prontuários]" vertex="1">
+          <mxGeometry height="16" width="680" x="195" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-21" parent="1" style="ellipse;fillColor=#d79b00;strokeColor=#d79b00;fontColor=#fff;fontSize=9;fontStyle=1;" value="1" vertex="1">
+          <mxGeometry height="16" width="16" x="105" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-22" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="SELECT beneficiários com integração pendente">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="122" y="156" as="sourcePoint" />
+            <mxPoint x="300" y="156" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-23" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="Oracle — Sistema Personal  ·  WHERE status_integracao IN (&#39;PENDING&#39;, &#39;PENDING_RETRY&#39;)" vertex="1">
+          <mxGeometry height="13" width="530" x="128" y="159" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-24" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="[ { patient_id, nome, cpf, plano, contrato } ]">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="193" as="sourcePoint" />
+            <mxPoint x="122" y="193" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-25" parent="1" style="ellipse;fillColor=#d79b00;strokeColor=#d79b00;fontColor=#fff;fontSize=9;fontStyle=1;" value="2" vertex="1">
+          <mxGeometry height="16" width="16" x="105" y="228" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-26" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="SELECT dados cadastrais completos do beneficiário">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="122" y="236" as="sourcePoint" />
+            <mxPoint x="300" y="236" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-27" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="Oracle — Sistema Personal  ·  WHERE patient_id = {id}" vertex="1">
+          <mxGeometry height="13" width="420" x="128" y="239" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-28" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="{ dados_cadastrais, cobertura, elegibilidade, contrato }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="270" as="sourcePoint" />
+            <mxPoint x="122" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-29" parent="1" style="ellipse;fillColor=#6c8ebf;strokeColor=#6c8ebf;fontColor=#fff;fontSize=9;fontStyle=1;" value="3" vertex="1">
+          <mxGeometry height="16" width="16" x="105" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-30" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="SELECT prontuário e histórico clínico">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="122" y="326" as="sourcePoint" />
+            <mxPoint x="500" y="326" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-31" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="SQL Server — HealthMap  ·  WHERE patient_id = {id}" vertex="1">
+          <mxGeometry height="13" width="400" x="128" y="329" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-32" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="{ consultas, exames, diagnósticos, medicamentos, alergias }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="360" as="sourcePoint" />
+            <mxPoint x="122" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-33" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333;fontSize=9;align=left;spacingLeft=6;" value="Worker consolida dados (Personal + HealthMap) e monta prontuário no formato esperado pelo Cockpit" vertex="1">
+          <mxGeometry height="24" width="700" x="48" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-34" parent="1" style="rounded=1;fillColor=none;strokeColor=#4a90d9;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="120" width="960" x="42" y="428" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-35" parent="1" style="rounded=1;fillColor=#4a90d9;strokeColor=#4a90d9;fontColor=#fff;fontSize=9;fontStyle=1;" value="FASE 2 — UPLOAD GCS" vertex="1">
+          <mxGeometry height="16" width="120" x="42" y="428" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-36" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#4a90d9;align=left;" value="[Worker grava prontuário no GCS Bucket via Pack.GoogleCloudStorageManageService]" vertex="1">
+          <mxGeometry height="16" width="600" x="170" y="428" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-37" parent="1" style="ellipse;fillColor=#4a90d9;strokeColor=#4a90d9;fontColor=#fff;fontSize=9;fontStyle=1;" value="4" vertex="1">
+          <mxGeometry height="16" width="16" x="105" y="456" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-38" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="GoogleCloudStorageManageService.UploadAsync()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="122" y="464" as="sourcePoint" />
+            <mxPoint x="705" y="464" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-39" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="( bucketName: &#39;careplus-prontuarios&#39;, storagePath: &#39;pacientes/{patient_id}/{transaction_id}/prontuario.pdf&#39;, fileStream )" vertex="1">
+          <mxGeometry height="13" width="680" x="128" y="467" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-40" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="5" vertex="1">
+          <mxGeometry height="16" width="16" x="698" y="488" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-42" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4a90d9;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="200 OK  ·  { storage_path }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="518" as="sourcePoint" />
+            <mxPoint x="715" y="518" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-43" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="storage_path confirmado">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="705" y="540" as="sourcePoint" />
+            <mxPoint x="122" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-44" parent="1" style="rounded=1;fillColor=none;strokeColor=#d6b656;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="235" width="1560" x="42" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-45" parent="1" style="rounded=1;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#333;fontSize=9;fontStyle=1;" value="FASE 3 — AUTH + NOTIFICAÇÃO AO COCKPIT" vertex="1">
+          <mxGeometry height="16" width="255" x="42" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-46" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#856000;align=left;" value="[Worker autentica no Auth Einstein e notifica Cockpit via ApiGee com referência ao prontuário no bucket]" vertex="1">
+          <mxGeometry height="16" width="750" x="305" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-47" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="6" vertex="1">
+          <mxGeometry height="16" width="16" x="105" y="588" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-48" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="POST /oauth2/token  { client_id, client_secret, grant_type: client_credentials }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="122" y="596" as="sourcePoint" />
+            <mxPoint x="1125" y="596" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-49" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;" value="Valida credenciais&lt;br&gt;Gera JWT RS256 · exp: 1h" vertex="1">
+          <mxGeometry height="38" width="150" x="1155" y="585" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-50" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="7" vertex="1">
+          <mxGeometry height="16" width="16" x="1118" y="623" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-51" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="200 OK  —  { access_token, token_type: Bearer, expires_in: 3600 }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1125" y="631" as="sourcePoint" />
+            <mxPoint x="122" y="631" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-52" parent="1" style="ellipse;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#fff;fontSize=9;fontStyle=1;" value="8" vertex="1">
+          <mxGeometry height="16" width="16" x="105" y="658" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-53" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="POST /cockpit/integrar">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="122" y="666" as="sourcePoint" />
+            <mxPoint x="1330" y="666" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-54" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="Authorization: Bearer &lt;access_token&gt;  ·  { patient_id, transaction_id, storage_path }  ·  X-Request-ID" vertex="1">
+          <mxGeometry height="13" width="800" x="128" y="669" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-55" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;" value="Valida JWT · rate limit&lt;br&gt;Injeta X-Correlation-ID&lt;br&gt;Roteia → Cockpit" vertex="1">
+          <mxGeometry height="48" width="155" x="1290" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-56" parent="1" style="ellipse;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#fff;fontSize=9;fontStyle=1;" value="9" vertex="1">
+          <mxGeometry height="16" width="16" x="1323" y="715" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-57" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="Forward  →  Cockpit  ·  { patient_id, transaction_id, storage_path }  ·  X-Correlation-ID">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1340" y="723" as="sourcePoint" />
+            <mxPoint x="1530" y="723" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-58" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;" value="Cockpit registra e&lt;br&gt;processa assincronamente" vertex="1">
+          <mxGeometry height="38" width="155" x="1560" y="713" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-59" parent="1" style="ellipse;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#fff;fontSize=9;fontStyle=1;" value="10" vertex="1">
+          <mxGeometry height="16" width="16" x="1518" y="748" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-60" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="202 Accepted  —  { correlationId }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1530" y="756" as="sourcePoint" />
+            <mxPoint x="1340" y="756" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-61" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="202 Accepted  —  retorno via ApiGee  →  Worker">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1330" y="778" as="sourcePoint" />
+            <mxPoint x="122" y="778" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-62" parent="1" style="rounded=1;fillColor=none;strokeColor=#c62828;strokeDashArray=5 3;" value="" vertex="1">
+          <mxGeometry height="38" width="1560" x="42" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-63" parent="1" style="rounded=1;fillColor=#c62828;strokeColor=#c62828;fontColor=#fff;fontSize=9;fontStyle=1;" value="ALT" vertex="1">
+          <mxGeometry height="14" width="34" x="42" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-64" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#c62828;align=left;" value="[Falha 5xx / timeout]  →  attempt_count++  ·  backoff exponencial (2s → 4s → 8s → 16s → 32s + jitter)  |  attempt &gt;= max_retry  →  status = CANCELLED + alerta crítico" vertex="1">
+          <mxGeometry height="13" width="1350" x="84" y="826" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-65" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333;fontSize=10;" value="&lt;b&gt;Background Worker&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="125" x="55" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-66" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#333;fontSize=10;" value="&lt;b&gt;Oracle&lt;/b&gt;&lt;br&gt;Personal" vertex="1">
+          <mxGeometry height="42" width="130" x="240" y="863" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-67" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;SQL Server&lt;/b&gt;&lt;br&gt;HealthMap" vertex="1">
+          <mxGeometry height="42" width="130" x="440" y="863" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-68" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Pack Service&lt;/b&gt;&lt;br&gt;Client" vertex="1">
+          <mxGeometry height="38" width="140" x="640" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-69" parent="1" style="shape=cylinder3;strokeColor=#4a90d9;fillColor=#cce5ff;fontColor=#333;fontSize=10;whiteSpace=wrap;html=1;" value="&lt;b&gt;GCS Bucket&lt;/b&gt;" vertex="1">
+          <mxGeometry height="42" width="140" x="855" y="863" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-70" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Auth Einstein&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="130" x="1065" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-71" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;ApiGee Gateway&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="130" x="1270" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="KteQwOLky1Pwh9WBRSAk-72" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Cockpit&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="130" x="1470" y="865" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Diagrama 2" id="E4udlf_alLpOxIwXXwHS">
+    <mxGraphModel dx="2066" dy="1070" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="f68I3aG3OaekU3UjO2bn-62" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontColor=#1a237e;" value="&lt;b&gt;Diagrama 2 — Cockpit Solicita Download dos Arquivos do Prontuário&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size: 10px; color: rgb(102, 102, 102);&quot;&gt;Cockpit autentica uma vez · N requisições { transactionId, filename } · Api Bff resolve path no Oracle · Pack baixa do GCS · retorna fileStream direto ao Cockpit&lt;/i&gt;" vertex="1">
+          <mxGeometry height="45" width="1480" x="80" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-63" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Cockpit&lt;/b&gt;&lt;br&gt;Albert Einstein" vertex="1">
+          <mxGeometry height="42" width="130" x="55" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-64" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Auth&lt;/b&gt;&lt;br&gt;Albert Einstein" vertex="1">
+          <mxGeometry height="42" width="130" x="255" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-65" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;ApiGee&lt;/b&gt;&lt;br&gt;Gateway" vertex="1">
+          <mxGeometry height="42" width="130" x="460" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-66" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Bff&lt;/b&gt;&lt;br&gt;Integração" vertex="1">
+          <mxGeometry height="42" width="130" x="665" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-67" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#333;fontSize=10;" value="&lt;b&gt;Oracle&lt;/b&gt;&lt;br&gt;Sistema Personal" vertex="1">
+          <mxGeometry height="52" width="140" x="880" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-68" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Pack CarePlus&lt;/b&gt;&lt;br&gt;.Infra.Service.Client" vertex="1">
+          <mxGeometry height="52" width="145" x="1105" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-69" parent="1" style="shape=cylinder3;strokeColor=#4a90d9;fillColor=#cce5ff;fontColor=#333;fontSize=10;whiteSpace=wrap;html=1;" value="&lt;b&gt;GCS Bucket&lt;/b&gt;&lt;br&gt;careplus-prontuarios" vertex="1">
+          <mxGeometry height="52" width="140" x="1340" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-70" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="107" as="sourcePoint" />
+            <mxPoint x="120" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-71" edge="1" parent="1" style="edgeStyle=none;strokeColor=#b85450;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="107" as="sourcePoint" />
+            <mxPoint x="320" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-72" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="525" y="107" as="sourcePoint" />
+            <mxPoint x="525" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-73" edge="1" parent="1" style="edgeStyle=none;strokeColor=#6c8ebf;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="730" y="107" as="sourcePoint" />
+            <mxPoint x="730" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-74" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d79b00;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="950" y="110" as="sourcePoint" />
+            <mxPoint x="950" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-75" edge="1" parent="1" style="edgeStyle=none;strokeColor=#b85450;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1177" y="110" as="sourcePoint" />
+            <mxPoint x="1177" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-76" edge="1" parent="1" style="edgeStyle=none;strokeColor=#4a90d9;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1410" y="110" as="sourcePoint" />
+            <mxPoint x="1410" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-77" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;opacity=60;" value="" vertex="1">
+          <mxGeometry height="610" width="10" x="115" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-78" parent="1" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;opacity=60;" value="" vertex="1">
+          <mxGeometry height="68" width="10" x="315" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-79" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d6b656;opacity=60;" value="" vertex="1">
+          <mxGeometry height="430" width="10" x="520" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-80" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;opacity=60;" value="" vertex="1">
+          <mxGeometry height="370" width="10" x="725" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-81" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;opacity=60;" value="" vertex="1">
+          <mxGeometry height="65" width="10" x="945" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-82" parent="1" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;opacity=60;" value="" vertex="1">
+          <mxGeometry height="195" width="10" x="1172" y="438" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-83" parent="1" style="rounded=1;fillColor=#cce5ff;strokeColor=#4a90d9;opacity=60;" value="" vertex="1">
+          <mxGeometry height="130" width="10" x="1405" y="468" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-84" parent="1" style="rounded=1;fillColor=none;strokeColor=#b85450;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="118" width="1550" x="42" y="118" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-85" parent="1" style="rounded=1;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="FASE 1 — AUTH" vertex="1">
+          <mxGeometry height="16" width="98" x="42" y="118" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-86" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#b85450;align=left;" value="[Cockpit obtém token JWT uma única vez — reutiliza em todas as N requisições do loop]" vertex="1">
+          <mxGeometry height="16" width="680" x="148" y="118" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-87" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="1" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-88" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="POST /oauth2/token  { client_id, client_secret, grant_type: client_credentials }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="155" as="sourcePoint" />
+            <mxPoint x="315" y="155" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-89" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="2" vertex="1">
+          <mxGeometry height="16" width="16" x="303" y="193" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-90" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="200 OK  —  { access_token, token_type: Bearer, expires_in: 3600 }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="315" y="201" as="sourcePoint" />
+            <mxPoint x="125" y="201" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-91" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;spacingLeft=6;" value="Token armazenado localmente · reutilizado em cada requisição do loop · renovado automaticamente antes do exp" vertex="1">
+          <mxGeometry height="22" width="680" x="48" y="228" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-92" parent="1" style="rounded=1;fillColor=none;strokeColor=#4a90d9;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="458" width="1550" x="42" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-93" parent="1" style="rounded=1;fillColor=#4a90d9;strokeColor=#4a90d9;fontColor=#fff;fontSize=9;fontStyle=1;" value="LOOP" vertex="1">
+          <mxGeometry height="16" width="42" x="42" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-94" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#4a90d9;align=left;" value="[para cada arquivo — prontuário composto de N arquivos · uma requisição por arquivo com { transactionId, filename }]" vertex="1">
+          <mxGeometry height="16" width="950" x="92" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-95" parent="1" style="ellipse;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#fff;fontSize=9;fontStyle=1;" value="3" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="289" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-96" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="GET /integracao/prontuario/arquivo">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="297" as="sourcePoint" />
+            <mxPoint x="520" y="297" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-97" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="Authorization: Bearer &lt;access_token&gt;  ·  { transactionId, filename }  ·  X-Correlation-ID" vertex="1">
+          <mxGeometry height="13" width="560" x="130" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-98" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;" value="Valida JWT · rate limit&lt;br&gt;Injeta X-Correlation-ID" vertex="1">
+          <mxGeometry height="38" width="155" x="545" y="284" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-99" parent="1" style="ellipse;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#fff;fontSize=9;fontStyle=1;" value="4" vertex="1">
+          <mxGeometry height="16" width="16" x="513" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-100" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="Roteia  →  Api Bff Integração">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="343" as="sourcePoint" />
+            <mxPoint x="725" y="343" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-101" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="{ transactionId, filename }  ·  X-Correlation-ID" vertex="1">
+          <mxGeometry height="13" width="320" x="535" y="346" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-102" parent="1" style="ellipse;fillColor=#d79b00;strokeColor=#d79b00;fontColor=#fff;fontSize=9;fontStyle=1;" value="5" vertex="1">
+          <mxGeometry height="16" width="16" x="718" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-103" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="SELECT storagePath, contentType">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="735" y="383" as="sourcePoint" />
+            <mxPoint x="945" y="383" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-104" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="WHERE transactionId = {id} AND filename = {name}  ·  Oracle — integration_transaction_files" vertex="1">
+          <mxGeometry height="13" width="530" x="740" y="386" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-105" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="{ storagePath, contentType }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="945" y="415" as="sourcePoint" />
+            <mxPoint x="735" y="415" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-106" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=10;fillColor=#fff9c4;strokeColor=#d79b00;fontColor=#333;fontSize=9;align=left;" value="🔒  Cockpit nunca recebe o storagePath&lt;br&gt;{ transactionId + filename }  →  storagePath resolvido internamente" vertex="1">
+          <mxGeometry height="42" width="250" x="978" y="372" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-107" parent="1" style="ellipse;fillColor=#6c8ebf;strokeColor=#6c8ebf;fontColor=#fff;fontSize=9;fontStyle=1;" value="6" vertex="1">
+          <mxGeometry height="16" width="16" x="718" y="448" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-108" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="GoogleCloudStorageManageService.DownloadAsync()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="735" y="456" as="sourcePoint" />
+            <mxPoint x="1172" y="456" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-109" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="( bucketName: &#39;careplus-prontuarios&#39;, storagePath: {storagePath resolvido pelo Oracle} )" vertex="1">
+          <mxGeometry height="13" width="560" x="740" y="459" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-110" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="7" vertex="1">
+          <mxGeometry height="16" width="16" x="1165" y="488" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-111" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4a90d9;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="GET gs://careplus-prontuarios/{storagePath}">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1182" y="496" as="sourcePoint" />
+            <mxPoint x="1405" y="496" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-112" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#4a90d9;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="fileStream  ·  { contentType, size }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1405" y="528" as="sourcePoint" />
+            <mxPoint x="1182" y="528" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-113" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="fileStream  ·  { filename, contentType, size }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1172" y="563" as="sourcePoint" />
+            <mxPoint x="735" y="563" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-114" parent="1" style="text;html=1;strokeColor=none;fillColor=#e8f5e9;fontSize=9;fontStyle=1;fontColor=#2e7d32;align=left;rounded=1;strokeColor=#82b366;" value="↩  fileStream retorna diretamente ao Cockpit — sem repasse por camadas de autenticação" vertex="1">
+          <mxGeometry height="18" width="540" x="48" y="583" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-115" parent="1" style="ellipse;fillColor=#6c8ebf;strokeColor=#6c8ebf;fontColor=#fff;fontSize=9;fontStyle=1;" value="8" vertex="1">
+          <mxGeometry height="16" width="16" x="718" y="613" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-116" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="200 OK  —  fileStream  ·  { filename, contentType, size }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="725" y="621" as="sourcePoint" />
+            <mxPoint x="530" y="621" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-117" parent="1" style="ellipse;fillColor=#4a90d9;strokeColor=#4a90d9;fontColor=#fff;fontSize=9;fontStyle=1;" value="9" vertex="1">
+          <mxGeometry height="16" width="16" x="513" y="648" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-118" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#333;fontSize=9;fontStyle=1;dashed=1;endArrow=open;endFill=0;" value="200 OK  —  fileStream  ·  { filename, contentType, size }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="656" as="sourcePoint" />
+            <mxPoint x="125" y="656" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-119" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#4a90d9;fontColor=#1a237e;fontSize=9;align=left;spacingLeft=6;" value="Cockpit grava o arquivo localmente e repete o loop com o próximo { transactionId, filename } até baixar todos os N arquivos que compõem o prontuário" vertex="1">
+          <mxGeometry height="24" width="930" x="48" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-120" parent="1" style="rounded=1;fillColor=none;strokeColor=#b85450;strokeDashArray=5 3;" value="" vertex="1">
+          <mxGeometry height="30" width="1550" x="42" y="722" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-121" parent="1" style="rounded=1;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="ALT" vertex="1">
+          <mxGeometry height="14" width="34" x="42" y="722" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-122" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#b85450;align=left;" value="[ApiGee retorna 401 — token expirado]  →  Cockpit volta à Fase 1, obtém novo token e reexecuta a requisição do arquivo corrente" vertex="1">
+          <mxGeometry height="13" width="1200" x="84" y="735" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-123" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Cockpit&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="130" x="55" y="775" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-124" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Auth Einstein&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="130" x="255" y="775" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-125" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;ApiGee Gateway&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="130" x="460" y="775" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-126" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Bff Int&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="130" x="665" y="775" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-127" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#333;fontSize=10;" value="&lt;b&gt;Oracle&lt;/b&gt;&lt;br&gt;Personal" vertex="1">
+          <mxGeometry height="42" width="140" x="880" y="773" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-128" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Pack Service Client&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="145" x="1105" y="775" as="geometry" />
+        </mxCell>
+        <mxCell id="f68I3aG3OaekU3UjO2bn-129" parent="1" style="shape=cylinder3;strokeColor=#4a90d9;fillColor=#cce5ff;fontColor=#333;fontSize=10;whiteSpace=wrap;html=1;" value="&lt;b&gt;GCS Bucket&lt;/b&gt;" vertex="1">
+          <mxGeometry height="42" width="140" x="1340" y="773" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="3e8ea6dokXEHdzGHTWYr" name="Diagrama 3">
+    <mxGraphModel dx="2066" dy="1070" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontColor=#1a237e;" value="&lt;b&gt;Diagrama 3 — Callback Receiver&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size: 10px; color: rgb(102, 102, 102);&quot;&gt;Cockpit retorna status de processamento via ApiGee → Api Bff → Api Core Integração&lt;/i&gt;" vertex="1">
+          <mxGeometry height="45" width="980" x="80" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Cockpit&lt;/b&gt;&lt;br&gt;Albert Einstein" vertex="1">
+          <mxGeometry height="42" width="140" x="50" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Auth&lt;/b&gt;&lt;br&gt;Albert Einstein" vertex="1">
+          <mxGeometry height="42" width="140" x="240" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;ApiGee&lt;/b&gt;&lt;br&gt;Gateway" vertex="1">
+          <mxGeometry height="42" width="140" x="440" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Bff&lt;/b&gt;&lt;br&gt;Integração" vertex="1">
+          <mxGeometry height="42" width="140" x="640" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Core&lt;/b&gt;&lt;br&gt;Integração" vertex="1">
+          <mxGeometry height="42" width="140" x="840" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-6" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="107" as="sourcePoint" />
+            <mxPoint x="120" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-7" edge="1" parent="1" style="edgeStyle=none;strokeColor=#b85450;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="107" as="sourcePoint" />
+            <mxPoint x="310" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-8" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="107" as="sourcePoint" />
+            <mxPoint x="510" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-9" edge="1" parent="1" style="edgeStyle=none;strokeColor=#6c8ebf;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="107" as="sourcePoint" />
+            <mxPoint x="710" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-10" edge="1" parent="1" style="edgeStyle=none;strokeColor=#6c8ebf;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="107" as="sourcePoint" />
+            <mxPoint x="910" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-11" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;opacity=60;" value="" vertex="1">
+          <mxGeometry height="490" width="10" x="115" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-12" parent="1" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;opacity=60;" value="" vertex="1">
+          <mxGeometry height="70" width="10" x="305" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-13" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d6b656;opacity=60;" value="" vertex="1">
+          <mxGeometry height="330" width="10" x="505" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-14" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;opacity=60;" value="" vertex="1">
+          <mxGeometry height="270" width="10" x="705" y="278" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-15" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;opacity=60;" value="" vertex="1">
+          <mxGeometry height="215" width="10" x="905" y="308" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-16" parent="1" style="rounded=1;fillColor=none;strokeColor=#9673a6;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="500" width="1080" x="40" y="118" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-17" parent="1" style="rounded=1;fillColor=#9673a6;strokeColor=#9673a6;fontColor=#fff;fontSize=9;fontStyle=1;" value="CALLBACK" vertex="1">
+          <mxGeometry height="16" width="72" x="40" y="118" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-18" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#9673a6;align=left;" value="[Cockpit processa prontuário e retorna status via ApiGee]" vertex="1">
+          <mxGeometry height="16" width="450" x="120" y="118" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-19" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="1" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="146" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-20" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#333;fontSize=9;fontStyle=1;endArrow=block;endFill=1;" value="POST /oauth2/token  { client_id, client_secret, grant_type: client_credentials }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="154" as="sourcePoint" />
+            <mxPoint x="305" y="154" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-21" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="2" vertex="1">
+          <mxGeometry height="16" width="16" x="288" y="193" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-22" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="200 OK — { access_token, expires_in: 3600 }">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305" y="201" as="sourcePoint" />
+            <mxPoint x="125" y="201" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-23" edge="1" parent="1" style="edgeStyle=none;strokeColor=#9673a6;strokeDashArray=3 2;opacity=40;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="226" as="sourcePoint" />
+            <mxPoint x="1120" y="226" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-24" parent="1" style="ellipse;fillColor=#9673a6;strokeColor=#9673a6;fontColor=#fff;fontSize=9;fontStyle=1;" value="3" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-25" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;dashed=1;" value="POST /integracao/callback">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="256" as="sourcePoint" />
+            <mxPoint x="505" y="256" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-26" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="Authorization: Bearer &lt;access_token&gt; · { transaction_id, status, error_details, timestamp }" vertex="1">
+          <mxGeometry height="13" width="370" x="130" y="259" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-27" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;" value="Valida JWT · rate limit&lt;br&gt;401 se inválido" vertex="1">
+          <mxGeometry height="38" width="140" x="525" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-28" parent="1" style="ellipse;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#fff;fontSize=9;fontStyle=1;" value="4" vertex="1">
+          <mxGeometry height="16" width="16" x="498" y="298" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-29" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="Roteia → Api Bff Integração">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="515" y="306" as="sourcePoint" />
+            <mxPoint x="705" y="306" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-30" parent="1" style="ellipse;fillColor=#6c8ebf;strokeColor=#6c8ebf;fontColor=#fff;fontSize=9;fontStyle=1;" value="5" vertex="1">
+          <mxGeometry height="16" width="16" x="698" y="328" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-31" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="Forward callback">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="715" y="336" as="sourcePoint" />
+            <mxPoint x="905" y="336" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-32" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=10;fillColor=#fff9c4;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;" value="Valida assinatura HMAC&lt;br&gt;Idempotência: ignora duplicados&lt;br&gt;Status válido: PROCESSED|FAILED|PARTIAL" vertex="1">
+          <mxGeometry height="52" width="210" x="930" y="326" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-33" parent="1" style="rounded=1;fillColor=none;strokeColor=#6c8ebf;strokeDashArray=5 3;" value="" vertex="1">
+          <mxGeometry height="190" width="280" x="820" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-34" parent="1" style="rounded=1;fillColor=#6c8ebf;strokeColor=#6c8ebf;fontColor=#fff;fontSize=9;fontStyle=1;" value="ALT" vertex="1">
+          <mxGeometry height="14" width="34" x="820" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-35" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#2e7d32;align=left;" value="[status = PROCESSED]" vertex="1">
+          <mxGeometry height="14" width="200" x="860" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-36" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#82b366;fontColor=#2e7d32;fontSize=9;" value="Agendar exclusão bucket (retention_days)" vertex="1">
+          <mxGeometry height="24" width="260" x="830" y="407" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-37" edge="1" parent="1" style="edgeStyle=none;strokeColor=#6c8ebf;strokeDashArray=3 2;opacity=50;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="820" y="438" as="sourcePoint" />
+            <mxPoint x="1100" y="438" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-38" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#c62828;align=left;" value="[status = FAILED]" vertex="1">
+          <mxGeometry height="14" width="200" x="860" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-39" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffebee;strokeColor=#c62828;fontColor=#c62828;fontSize=9;" value="Manter arquivos no bucket · Disparar alerta" vertex="1">
+          <mxGeometry height="24" width="260" x="830" y="457" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-40" edge="1" parent="1" style="edgeStyle=none;strokeColor=#6c8ebf;strokeDashArray=3 2;opacity=50;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="820" y="488" as="sourcePoint" />
+            <mxPoint x="1100" y="488" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-41" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#e65100;align=left;" value="[status = PARTIAL]" vertex="1">
+          <mxGeometry height="14" width="200" x="860" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-42" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ef6c00;fontColor=#e65100;fontSize=9;" value="Disparar alerta · Avaliar reprocessamento manual" vertex="1">
+          <mxGeometry height="24" width="260" x="830" y="507" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-43" parent="1" style="ellipse;fillColor=#6c8ebf;strokeColor=#6c8ebf;fontColor=#fff;fontSize=9;fontStyle=1;" value="6" vertex="1">
+          <mxGeometry height="16" width="16" x="898" y="598" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-44" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="200 OK">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="905" y="606" as="sourcePoint" />
+            <mxPoint x="715" y="606" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-45" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="200 OK via ApiGee → Cockpit">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="626" as="sourcePoint" />
+            <mxPoint x="125" y="626" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-46" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Cockpit&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="50" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-47" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Auth Einstein&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="240" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-48" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;ApiGee&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="440" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-49" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Bff Int&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="640" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="haOmciCmu7TAUXGwtJSa-50" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Core Int&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="840" y="665" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="vmbwuwl5dTA8LpcceJiB" name="Página-4">
+    <mxGraphModel dx="2066" dy="1070" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontColor=#1a237e;" value="&lt;b&gt;Diagrama 4 — Reconciliation Job&lt;/b&gt;&lt;br&gt;&lt;i style=&quot;font-size: 10px; color: rgb(102, 102, 102);&quot;&gt;Job periódico · Cenário A: timeout sem callback · Cenário B: downloaded sem callback · Cenário C: retenção e exclusão de arquivos no GCS&lt;/i&gt;" vertex="1">
+          <mxGeometry height="45" width="1060" x="50" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#333;fontSize=10;" value="&lt;b&gt;Reconciliation&lt;/b&gt;&lt;br&gt;Job" vertex="1">
+          <mxGeometry height="42" width="140" x="50" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Bff Worker&lt;/b&gt;&lt;br&gt;(Reenvio)" vertex="1">
+          <mxGeometry height="42" width="140" x="260" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Pack&lt;/b&gt;&lt;br&gt;CarePlus.Infra&lt;br&gt;.Service.Client" vertex="1">
+          <mxGeometry height="52" width="140" x="470" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-5" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;GCS Bucket&lt;/b&gt;&lt;br&gt;careplus-prontuarios" vertex="1">
+          <mxGeometry height="52" width="150" x="680" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Alerting&lt;/b&gt;&lt;br&gt;PagerDuty / Slack" vertex="1">
+          <mxGeometry height="42" width="150" x="910" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-7" edge="1" parent="1" style="edgeStyle=none;strokeColor=#9673a6;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="107" as="sourcePoint" />
+            <mxPoint x="120" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-8" edge="1" parent="1" style="edgeStyle=none;strokeColor=#82b366;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="107" as="sourcePoint" />
+            <mxPoint x="330" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-9" edge="1" parent="1" style="edgeStyle=none;strokeColor=#b85450;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="540" y="110" as="sourcePoint" />
+            <mxPoint x="540" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-10" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="755" y="110" as="sourcePoint" />
+            <mxPoint x="755" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-11" edge="1" parent="1" style="edgeStyle=none;strokeColor=#d6b656;strokeDashArray=6 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="985" y="107" as="sourcePoint" />
+            <mxPoint x="985" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-12" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;opacity=60;" value="" vertex="1">
+          <mxGeometry height="740" width="10" x="115" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-13" parent="1" style="text;html=1;strokeColor=#9673a6;fillColor=#f5f0ff;fontSize=10;fontStyle=2;fontColor=#9673a6;align=center;rounded=1;" value="⏱  Disparado a cada reconcile_interval_min (config)" vertex="1">
+          <mxGeometry height="20" width="1080" x="40" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-14" parent="1" style="rounded=1;fillColor=none;strokeColor=#ef6c00;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="185" width="1080" x="40" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-15" parent="1" style="rounded=1;fillColor=#ef6c00;strokeColor=#ef6c00;fontColor=#fff;fontSize=9;fontStyle=1;" value="CENÁRIO A" vertex="1">
+          <mxGeometry height="16" width="82" x="40" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-16" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#ef6c00;align=left;" value="[status = SENT AND sent_at &lt; NOW() - pending_timeout_min — Cockpit notificado mas não baixou e não retornou callback]" vertex="1">
+          <mxGeometry height="16" width="800" x="130" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-17" parent="1" style="rounded=1;fillColor=none;strokeColor=#82b366;strokeDashArray=4 3;" value="" vertex="1">
+          <mxGeometry height="148" width="1060" x="50" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-18" parent="1" style="rounded=1;fillColor=#82b366;strokeColor=#82b366;fontColor=#fff;fontSize=9;fontStyle=1;" value="ALT" vertex="1">
+          <mxGeometry height="14" width="34" x="50" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-19" parent="1" style="ellipse;fillColor=#9673a6;strokeColor=#9673a6;fontColor=#fff;fontSize=9;fontStyle=1;" value="1" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="195" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-20" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#2e7d32;align=left;" value="[download_count &gt; 0 — Cockpit baixou mas não retornou callback]" vertex="1">
+          <mxGeometry height="14" width="490" x="90" y="193" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-21" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#333;fontSize=9;endArrow=block;endFill=1;" value="Aguarda grace period — se persistir → Alerta escalado">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="210" as="sourcePoint" />
+            <mxPoint x="980" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-22" edge="1" parent="1" style="edgeStyle=none;strokeColor=#82b366;strokeDashArray=3 2;opacity=50;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="50" y="232" as="sourcePoint" />
+            <mxPoint x="1110" y="232" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-23" parent="1" style="ellipse;fillColor=#9673a6;strokeColor=#9673a6;fontColor=#fff;fontSize=9;fontStyle=1;" value="2" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-24" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#c62828;align=left;" value="[download_count = 0 — Cockpit não baixou · attempt_count &lt; max_retry]" vertex="1">
+          <mxGeometry height="14" width="490" x="90" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-25" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontColor=#333;fontSize=9;endArrow=block;endFill=1;" value="Reenvio: POST /cockpit/integrar via ApiGee (Diagrama 3)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="266" as="sourcePoint" />
+            <mxPoint x="325" y="266" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-26" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#c62828;fontSize=9;dashed=1;endArrow=block;endFill=1;" value="Se attempt_count &gt;= max_retry → status=CANCELLED + alerta crítico">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="294" as="sourcePoint" />
+            <mxPoint x="980" y="294" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-27" parent="1" style="rounded=1;fillColor=none;strokeColor=#fbbf24;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="110" width="1080" x="40" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-28" parent="1" style="rounded=1;fillColor=#fbbf24;strokeColor=#fbbf24;fontColor=#333;fontSize=9;fontStyle=1;" value="CENÁRIO B" vertex="1">
+          <mxGeometry height="16" width="82" x="40" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-29" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#856000;align=left;" value="[status = DOWNLOADED AND callback_received_at IS NULL AND timeout — Cockpit baixou os arquivos mas não retornou callback]" vertex="1">
+          <mxGeometry height="16" width="870" x="130" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-30" parent="1" style="ellipse;fillColor=#9673a6;strokeColor=#9673a6;fontColor=#fff;fontSize=9;fontStyle=1;" value="3" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="378" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-31" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#333;fontSize=9;endArrow=block;endFill=1;" value="Alerta escalado: Cockpit baixou prontuário mas não retornou callback">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="386" as="sourcePoint" />
+            <mxPoint x="980" y="386" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-32" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#888;align=left;" value="Alerta com: transaction_id · patient_id · download_count · last_downloaded_at" vertex="1">
+          <mxGeometry height="13" width="500" x="130" y="389" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-33" parent="1" style="ellipse;fillColor=#9673a6;strokeColor=#9673a6;fontColor=#fff;fontSize=9;fontStyle=1;" value="4" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#d6b656;fontColor=#333;fontSize=9;align=left;spacingLeft=6;" value="Avaliação manual — possível reenvio via Diagrama 3" vertex="1">
+          <mxGeometry height="24" width="350" x="130" y="418" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-35" parent="1" style="rounded=1;fillColor=none;strokeColor=#2e7d32;strokeDashArray=6 3;" value="" vertex="1">
+          <mxGeometry height="370" width="1080" x="40" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-36" parent="1" style="rounded=1;fillColor=#2e7d32;strokeColor=#2e7d32;fontColor=#fff;fontSize=9;fontStyle=1;" value="CENÁRIO C" vertex="1">
+          <mxGeometry height="16" width="82" x="40" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-37" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#2e7d32;align=left;" value="[status = PROCESSED AND callback_received_at &lt; NOW() - retention_days — Retenção de arquivos no GCS expirada]" vertex="1">
+          <mxGeometry height="16" width="800" x="130" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-38" parent="1" style="rounded=1;fillColor=none;strokeColor=#d6b656;strokeDashArray=4 3;" value="" vertex="1">
+          <mxGeometry height="330" width="1060" x="50" y="498" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-39" parent="1" style="rounded=1;fillColor=#d6b656;strokeColor=#d6b656;fontColor=#333;fontSize=9;fontStyle=1;" value="loop" vertex="1">
+          <mxGeometry height="14" width="36" x="50" y="498" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-40" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontStyle=2;fontColor=#856000;align=left;" value="[para cada arquivo em integration_transaction_files WHERE deleted_from_bucket = false]" vertex="1">
+          <mxGeometry height="14" width="600" x="94" y="498" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-41" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="5" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="528" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-42" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="GoogleCloudStorageManageService.DeleteAsync( storagePath )">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="536" as="sourcePoint" />
+            <mxPoint x="535" y="536" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-43" parent="1" style="ellipse;fillColor=#b85450;strokeColor=#b85450;fontColor=#fff;fontSize=9;fontStyle=1;" value="6" vertex="1">
+          <mxGeometry height="16" width="16" x="528" y="558" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-44" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#333;fontSize=10;fontStyle=1;endArrow=block;endFill=1;" value="DELETE gs://careplus-prontuarios/{storagePath}">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="545" y="566" as="sourcePoint" />
+            <mxPoint x="750" y="566" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-45" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="204 No Content">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="594" as="sourcePoint" />
+            <mxPoint x="545" y="594" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-46" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontColor=#888;fontSize=9;dashed=1;endArrow=open;endFill=0;" value="Arquivo deletado — deleted_from_bucket = TRUE · deleted_at = NOW()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="628" as="sourcePoint" />
+            <mxPoint x="125" y="628" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-47" parent="1" style="ellipse;fillColor=#9673a6;strokeColor=#9673a6;fontColor=#fff;fontSize=9;fontStyle=1;" value="7" vertex="1">
+          <mxGeometry height="16" width="16" x="108" y="668" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-48" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#333;align=left;" value="Quando todos os arquivos deleted_from_bucket = TRUE:" vertex="1">
+          <mxGeometry height="13" width="380" x="130" y="668" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-49" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#82b366;fontColor=#2e7d32;fontSize=9;align=left;spacingLeft=6;" value="status = ARCHIVED · storage_ref = NULL" vertex="1">
+          <mxGeometry height="24" width="300" x="130" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-50" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#333;fontSize=10;" value="&lt;b&gt;Reconciliation Job&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="50" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-51" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333;fontSize=10;" value="&lt;b&gt;Api Bff Worker&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="260" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-52" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333;fontSize=10;" value="&lt;b&gt;Pack Service Client&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="140" x="470" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-53" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;GCS Bucket&lt;/b&gt;" vertex="1">
+          <mxGeometry height="42" width="150" x="680" y="863" as="geometry" />
+        </mxCell>
+        <mxCell id="nr_UsPeZWEl87DXgOzYS-54" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#d6b656;fontColor=#333;fontSize=10;" value="&lt;b&gt;Alerting&lt;/b&gt;" vertex="1">
+          <mxGeometry height="38" width="150" x="910" y="865" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
