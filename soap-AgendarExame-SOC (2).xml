@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║  CARE PLUS — INTEGRAÇÃO SOC | AGENDAMENTO DE EXAME OCUPACIONAL             ║
+  ║  WebService: SOC (Sistema de Controle Ocupacional)                         ║
+  ║  Protocolo: SOAP 1.1  |  Operação: AgendarExame                           ║
+  ║                                                                            ║
+  ║  Os elementos XML espelham fielmente os campos de cada aba do ADR.         ║
+  ║  Dados fictícios para fins de referência e desenvolvimento.                ║
+  ║  Enviar APENAS o nó do tipo correspondente dentro de <exame-ocupacional>.  ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
+-->
+<soapenv:Envelope
+  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:soc="http://ws.soc.com.br/">
+
+  <soapenv:Header/>
+
+  <soapenv:Body>
+    <soc:AgendarExame>
+
+      <agendamento>
+
+        <!-- ══════════════════════════════════════════════════
+             CREDENCIAIS
+             ══════════════════════════════════════════════════ -->
+        <credenciais>
+          <chaveIntegracao>CP2024-SOC-INTEGRACAO-KEY</chaveIntegracao>
+          <codigoEmpresa>10045</codigoEmpresa>
+          <codigoResponsavelCadastro>USR-RH-001</codigoResponsavelCadastro>
+        </credenciais>
+
+        <!-- ══════════════════════════════════════════════════
+             EXAME OCUPACIONAL
+             Enviar APENAS o nó do tipo correspondente.
+             Remover os demais antes de enviar ao SOC.
+             ══════════════════════════════════════════════════ -->
+        <exame-ocupacional>
+
+          <!-- ════════════════════════════════════════════════
+               ABA: ADMISSIONAL
+               Exame realizado no momento da contratação
+               ════════════════════════════════════════════════ -->
+          <admissional>
+            <tipoExame>ADMISSIONAL</tipoExame>
+
+            <cpfDoFuncionario>123.456.789-09</cpfDoFuncionario>
+            <nomeCompleto>Carlos Eduardo Mendonça</nomeCompleto>
+            <dataDeNascimento>15/03/1990</dataDeNascimento>
+            <cargo>Analista de Logística</cargo>
+            <cbo>3141-05</cbo>
+            <setorCentroDeCusto>Logística e Distribuição — CC-1042</setorCentroDeCusto>
+            <dataPrevistaDeAdmissao>20/03/2025</dataPrevistaDeAdmissao>
+            <unidadeDeAtendimento>UND-SP-042</unidadeDeAtendimento>
+            <riscosOcupacionais>ERGONOMICO,QUIMICO</riscosOcupacionais>
+            <observacoes>Candidato aprovado em processo seletivo. Início previsto segunda-feira.</observacoes>
+
+          </admissional>
+
+          <!-- ════════════════════════════════════════════════
+               ABA: DEMISSIONAL
+               Exame realizado ao término do vínculo empregatício
+               ════════════════════════════════════════════════ -->
+          <demissional>
+            <tipoExame>DEMISSIONAL</tipoExame>
+
+            <cpfDoFuncionario>987.654.321-00</cpfDoFuncionario>
+            <nomeCompleto>Fernanda Souza Lima</nomeCompleto>
+            <matricula>MAT-00287</matricula>
+            <cargoAtual>Assistente Administrativo</cargoAtual>
+            <dataDoDesligamento>28/02/2025</dataDoDesligamento>
+            <motivoDoDesligamento>Pedido de demissão</motivoDoDesligamento>
+            <unidadeDeAtendimento>UND-SP-042</unidadeDeAtendimento>
+            <dataDoUltimoPeriodico>10/08/2024</dataDoUltimoPeriodico>
+            <observacoes>Colaboradora solicitou desligamento voluntário. Aviso prévio cumprido.</observacoes>
+
+          </demissional>
+
+          <!-- ════════════════════════════════════════════════
+               ABA: MUDANÇA DE FUNÇÃO
+               Exame realizado quando há alteração de cargo
+               com mudança de risco ocupacional
+               ════════════════════════════════════════════════ -->
+          <mudancaDeFuncao>
+            <tipoExame>MUDANCA_FUNCAO</tipoExame>
+
+            <cpfDoFuncionario>321.654.987-11</cpfDoFuncionario>
+            <nomeCompleto>Roberto Alves Pereira</nomeCompleto>
+            <matricula>MAT-00391</matricula>
+            <cargoDeOrigem>Auxiliar de Produção</cargoDeOrigem>
+            <cargoDeDestino>Técnico de Manutenção</cargoDeDestino>
+            <setorDeOrigem>Produção — Linha A</setorDeOrigem>
+            <setorDeDestino>Manutenção Industrial</setorDeDestino>
+            <dataDaMudanca>01/04/2025</dataDaMudanca>
+            <riscosDoCargoDEDestino>FISICO,ELETRICO,MECANICO</riscosDoCargoDEDestino>
+            <unidadeDeAtendimento>UND-SP-042</unidadeDeAtendimento>
+            <observacoes>Promoção interna aprovada pelo gestor. Novo cargo exige habilitação elétrica NR-10.</observacoes>
+
+          </mudancaDeFuncao>
+
+          <!-- ════════════════════════════════════════════════
+               ABA: RETORNO AO TRABALHO
+               Exame realizado após afastamento superior
+               a 30 dias por doença ou acidente
+               ════════════════════════════════════════════════ -->
+          <retornoAoTrabalho>
+            <tipoExame>RETORNO_TRABALHO</tipoExame>
+
+            <cpfDoFuncionario>456.789.123-22</cpfDoFuncionario>
+            <nomeCompleto>Marcos Vinícius Teixeira</nomeCompleto>
+            <matricula>MAT-00512</matricula>
+            <cargoAtual>Operador de Empilhadeira</cargoAtual>
+            <motivoDoAfastamento>Afastamento por doença</motivoDoAfastamento>
+            <dataDeInicioDoAfastamento>10/01/2025</dataDeInicioDoAfastamento>
+            <dataPrevistaDeRetorno>15/03/2025</dataPrevistaDeRetorno>
+            <cid>M54.5</cid>
+            <!-- M54.5 = Dor lombar baixa | enviar string vazia quando não aplicável -->
+            <unidadeDeAtendimento>UND-SP-042</unidadeDeAtendimento>
+            <observacoes>Colaborador apresentou alta médica. Retorno liberado pelo INSS em 10/03/2025.</observacoes>
+
+          </retornoAoTrabalho>
+
+          <!-- ════════════════════════════════════════════════
+               ABA: PERIÓDICO
+               Exame de rotina conforme periodicidade
+               definida pelo PCMSO
+               ════════════════════════════════════════════════ -->
+          <periodico>
+            <tipoExame>PERIODICO</tipoExame>
+
+            <cpfDoFuncionario>654.321.098-33</cpfDoFuncionario>
+            <nomeCompleto>Juliana Castro Ferreira</nomeCompleto>
+            <matricula>MAT-00178</matricula>
+            <cargoAtual>Analista de Segurança do Trabalho</cargoAtual>
+            <setor>Saúde e Segurança Ocupacional</setor>
+            <dataDoUltimoPeriodico>05/03/2024</dataDoUltimoPeriodico>
+            <dataPrevistaDoProximo>05/03/2025</dataPrevistaDoProximo>
+            <periodicidade>ANUAL</periodicidade>
+            <riscosOcupacionais>ERGONOMICO,BIOLOGICO</riscosOcupacionais>
+            <unidadeDeAtendimento>UND-SP-042</unidadeDeAtendimento>
+            <observacoes>Periódico anual conforme PCMSO vigente. Sem restrições no último exame.</observacoes>
+
+          </periodico>
+
+        </exame-ocupacional>
+
+      </agendamento>
+
+    </soc:AgendarExame>
+  </soapenv:Body>
+
+</soapenv:Envelope>
+
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║  RETORNO ESPERADO — SUCESSO                                                ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
+
+  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+      <AgendarExameResponse>
+        <agendamento>
+          <codigoDoAgendamento>AGD-2025-00891</codigoDoAgendamento>
+          <codigoDoEstabelecimento>EST-SP-042</codigoDoEstabelecimento>
+          <nomeDoEstabelecimento>Clínica Saúde Ocupacional Paulista</nomeDoEstabelecimento>
+          <localDoEstabelecimento>Av. Paulista, 1842 - Bela Vista, São Paulo - SP</localDoEstabelecimento>
+        </agendamento>
+      </AgendarExameResponse>
+    </soapenv:Body>
+  </soapenv:Envelope>
+
+  Campos a persistir no banco após retorno com sucesso:
+    → codigoDoAgendamento      (campo: Código do Agendamento SOC)
+    → codigoDoEstabelecimento  (campo: Código do Estabelecimento)
+    → nomeDoEstabelecimento    (campo: Nome do Estabelecimento)
+    → localDoEstabelecimento   (campo: Local do Estabelecimento)
+    → status                   → SUCESSO
+
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║  RETORNO ESPERADO — ERRO (SOAP FAULT)                                      ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
+
+  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+      <soapenv:Fault>
+        <faultcode>soapenv:Server</faultcode>
+        <faultstring>CPF do funcionário não encontrado na base SOC.</faultstring>
+      </soapenv:Fault>
+    </soapenv:Body>
+  </soapenv:Envelope>
+
+  Campos a persistir no banco após SOAP Fault:
+    → status        → ERRO
+    → mensagemErro  → conteúdo de <faultstring>
+    → Sem retentativa automática
+-->
