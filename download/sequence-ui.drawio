@@ -1,0 +1,400 @@
+<mxfile host="claude" type="device">
+  <diagram id="seq" name="Sequence">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="2204" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Diagrama de Sequência — Interação de Negócio da Tela (Runtime)" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+    <mxGeometry x="40" y="10" width="1360" height="30" as="geometry"/>
+  </mxCell>
+        <mxCell id="p_RH" value="Usuário RH/Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE599;strokeColor=#BF9000;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="50" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="p_UI" value="Portal Ocupacional UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="220" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="p_GW" value="ApiGee / IAM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="390" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="p_BFF" value="API BFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="560" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="p_CORE" value="API Core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="730" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="p_DB" value="Oracle DB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="900" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="p_INFRA" value="careplus.infra-service-client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1070" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="p_GCS" value="GCS Bucket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1240" y="60" width="150" height="44" as="geometry"/>
+    </mxCell>
+        <mxCell id="ll_RH" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="125" y="104" as="sourcePoint"/>
+        <mxPoint x="125" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="ll_UI" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="295" y="104" as="sourcePoint"/>
+        <mxPoint x="295" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="ll_GW" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="465" y="104" as="sourcePoint"/>
+        <mxPoint x="465" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="ll_BFF" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="635" y="104" as="sourcePoint"/>
+        <mxPoint x="635" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="ll_CORE" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="805" y="104" as="sourcePoint"/>
+        <mxPoint x="805" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="ll_DB" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="975" y="104" as="sourcePoint"/>
+        <mxPoint x="975" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="ll_INFRA" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1145" y="104" as="sourcePoint"/>
+        <mxPoint x="1145" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="ll_GCS" style="endArrow=none;html=1;dashed=1;strokeColor=#888888;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1315" y="104" as="sourcePoint"/>
+        <mxPoint x="1315" y="2184" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+        <mxCell id="sec_2" value="═══ Carga inicial da tela ═══" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=2;fillColor=#E1D5E7;strokeColor=#9673A6;rounded=0;" vertex="1" parent="1">
+        <mxGeometry x="40" y="124" width="1360" height="22" as="geometry"/>
+      </mxCell>
+        <mxCell id="m_3" value="1. Acessa &quot;Programas de Prevenção e Controle&quot;" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="125" y="166" as="sourcePoint"/>
+          <mxPoint x="295" y="166" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_4" value="2. GET /categories (JWT + X-Company-ID)" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="204" as="sourcePoint"/>
+          <mxPoint x="465" y="204" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_5" value="3. Valida JWT e role (RH/ADMIN)" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;entryX=1;entryY=0.5;curved=1;strokeColor=#444;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="465" y="238" as="sourcePoint"/>
+          <mxPoint x="495" y="252" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_6" value="4. Encaminha requisição" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="465" y="280" as="sourcePoint"/>
+          <mxPoint x="635" y="280" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_7" value="5. RbacFilter (RH/ADMIN)" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;entryX=1;entryY=0.5;curved=1;strokeColor=#444;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="314" as="sourcePoint"/>
+          <mxPoint x="665" y="328" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_8" value="6. GET categorias" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="356" as="sourcePoint"/>
+          <mxPoint x="805" y="356" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_9" value="7. SELECT em DOC_TIPO" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="394" as="sourcePoint"/>
+          <mxPoint x="975" y="394" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_10" value="8. Catálogo de tipos" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="975" y="432" as="sourcePoint"/>
+          <mxPoint x="805" y="432" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_11" value="9. Cards Empresa/Funcionário" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="470" as="sourcePoint"/>
+          <mxPoint x="635" y="470" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_12" value="10. 200 OK (categorias + sync-status)" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="508" as="sourcePoint"/>
+          <mxPoint x="295" y="508" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_13" value="11. Exibe 2 cards" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="546" as="sourcePoint"/>
+          <mxPoint x="125" y="546" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="sec_14" value="═══ alt: Documentos da Empresa ═══" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=2;fillColor=#E1D5E7;strokeColor=#9673A6;rounded=0;" vertex="1" parent="1">
+        <mxGeometry x="40" y="572" width="1360" height="22" as="geometry"/>
+      </mxCell>
+        <mxCell id="m_15" value="12. Seleciona card &quot;Empresa&quot;" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="125" y="614" as="sourcePoint"/>
+          <mxPoint x="295" y="614" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_16" value="13. GET /company/documents" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="652" as="sourcePoint"/>
+          <mxPoint x="635" y="652" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_17" value="14. Listar escopo EMPRESA" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="690" as="sourcePoint"/>
+          <mxPoint x="805" y="690" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_18" value="15. SELECT DOC_PREV_CONTROLE WHERE ESCOPO=EMPRESA" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="728" as="sourcePoint"/>
+          <mxPoint x="975" y="728" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_19" value="16. Metadados + SYNC_STATUS" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="975" y="766" as="sourcePoint"/>
+          <mxPoint x="805" y="766" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_20" value="17. Lista" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="804" as="sourcePoint"/>
+          <mxPoint x="635" y="804" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_21" value="18. 200 OK" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="842" as="sourcePoint"/>
+          <mxPoint x="295" y="842" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_22" value="19. Exibe lista (tipo, data, ação)" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="880" as="sourcePoint"/>
+          <mxPoint x="125" y="880" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="sec_23" value="═══ else: Documentos do Funcionário ═══" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=2;fillColor=#E1D5E7;strokeColor=#9673A6;rounded=0;" vertex="1" parent="1">
+        <mxGeometry x="40" y="906" width="1360" height="22" as="geometry"/>
+      </mxCell>
+        <mxCell id="m_24" value="20. Busca por nome/CPF" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="125" y="948" as="sourcePoint"/>
+          <mxPoint x="295" y="948" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_25" value="21. GET /employees?search=" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="986" as="sourcePoint"/>
+          <mxPoint x="635" y="986" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_26" value="22. EmployeeSearchService" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="1024" as="sourcePoint"/>
+          <mxPoint x="805" y="1024" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_27" value="23. SELECT DOC_FUNCIONARIO (IX_DOC_FUNC_NOME)" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1062" as="sourcePoint"/>
+          <mxPoint x="975" y="1062" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_28" value="24. Funcionários" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="975" y="1100" as="sourcePoint"/>
+          <mxPoint x="805" y="1100" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_29" value="25. Lista" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1138" as="sourcePoint"/>
+          <mxPoint x="635" y="1138" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_30" value="26. 200 OK" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="1176" as="sourcePoint"/>
+          <mxPoint x="295" y="1176" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_31" value="27. Seleciona funcionário" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="125" y="1214" as="sourcePoint"/>
+          <mxPoint x="295" y="1214" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_32" value="28. GET /employees/{cpf}/documents" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="1252" as="sourcePoint"/>
+          <mxPoint x="635" y="1252" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_33" value="29. Documentos nominais" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="1290" as="sourcePoint"/>
+          <mxPoint x="805" y="1290" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_34" value="30. SELECT por FUNCIONARIO_CPF" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1328" as="sourcePoint"/>
+          <mxPoint x="975" y="1328" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_35" value="31. Metadados" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="975" y="1366" as="sourcePoint"/>
+          <mxPoint x="805" y="1366" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_36" value="32. Lista" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1404" as="sourcePoint"/>
+          <mxPoint x="635" y="1404" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_37" value="33. 200 OK" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="1442" as="sourcePoint"/>
+          <mxPoint x="295" y="1442" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_38" value="34. Exibe documentos do funcionário" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="1480" as="sourcePoint"/>
+          <mxPoint x="125" y="1480" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="sec_39" value="═══ Download do PDF ═══" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=2;fillColor=#E1D5E7;strokeColor=#9673A6;rounded=0;" vertex="1" parent="1">
+        <mxGeometry x="40" y="1506" width="1360" height="22" as="geometry"/>
+      </mxCell>
+        <mxCell id="m_40" value="35. Clica em ⬇ Download" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="125" y="1548" as="sourcePoint"/>
+          <mxPoint x="295" y="1548" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_41" value="36. GET /documents/{id}/download" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="1586" as="sourcePoint"/>
+          <mxPoint x="635" y="1586" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_42" value="37. DocumentDownloadService(id)" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="1624" as="sourcePoint"/>
+          <mxPoint x="805" y="1624" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_43" value="38. SELECT GCS_OBJECT_KEY, GCS_BUCKET" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1662" as="sourcePoint"/>
+          <mxPoint x="975" y="1662" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_44" value="39. Chave do binário" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="975" y="1700" as="sourcePoint"/>
+          <mxPoint x="805" y="1700" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_45" value="40. getObjectStream(bucket, key)" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1738" as="sourcePoint"/>
+          <mxPoint x="1145" y="1738" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_46" value="41. GET object (stream)" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1145" y="1776" as="sourcePoint"/>
+          <mxPoint x="1315" y="1776" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_47" value="42. Bytes do PDF" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1315" y="1814" as="sourcePoint"/>
+          <mxPoint x="1145" y="1814" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_48" value="43. InputStream" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1145" y="1852" as="sourcePoint"/>
+          <mxPoint x="805" y="1852" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_49" value="44. INSERT DOC_AUDITORIA (DOWNLOAD)" style="endArrow=classic;html=1;rounded=0;strokeColor=#222;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1890" as="sourcePoint"/>
+          <mxPoint x="975" y="1890" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_50" value="45. Stream PDF (application/pdf)" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="1928" as="sourcePoint"/>
+          <mxPoint x="635" y="1928" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_51" value="46. Stream (proxy)" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="1966" as="sourcePoint"/>
+          <mxPoint x="295" y="1966" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_52" value="47. Download iniciado" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="2004" as="sourcePoint"/>
+          <mxPoint x="125" y="2004" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="sec_53" value="═══ opt: Documento não sincronizado ═══" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=2;fillColor=#E1D5E7;strokeColor=#9673A6;rounded=0;" vertex="1" parent="1">
+        <mxGeometry x="40" y="2030" width="1360" height="22" as="geometry"/>
+      </mxCell>
+        <mxCell id="m_54" value="48. SYNC_STATUS = STALE/PENDING" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="805" y="2072" as="sourcePoint"/>
+          <mxPoint x="635" y="2072" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_55" value="49. Flag de aviso" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="635" y="2110" as="sourcePoint"/>
+          <mxPoint x="295" y="2110" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="m_56" value="50. &quot;⚠ Documento ainda não sincronizado&quot;" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeColor=#666;fontSize=10;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="295" y="2148" as="sourcePoint"/>
+          <mxPoint x="125" y="2148" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

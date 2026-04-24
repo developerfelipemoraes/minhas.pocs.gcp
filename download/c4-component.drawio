@@ -1,0 +1,89 @@
+<mxfile host="app.diagrams.net" modified="2026-04-13T00:00:00.000Z" agent="Claude" version="24.0.0">
+  <diagram id="c4-component" name="C4 - Component Diagram (API Core)">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="C4 - Component Diagram - API Core&#10;SD #248562" style="text;html=1;align=center;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- BFF (externo) -->
+        <mxCell id="bff" value="API BFF&#10;[Container]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="80" y="400" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Container Core -->
+        <mxCell id="corebox" value="API Core" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0D5AA7;dashed=1;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5" vertex="1" parent="1">
+          <mxGeometry x="340" y="100" width="880" height="680" as="geometry" />
+        </mxCell>
+
+        <!-- Controller -->
+        <mxCell id="ctrl" value="DocumentController&#10;[Component: REST Controller]&#10;&#10;Expõe endpoints de categorias,&#10;listagem, versões, download,&#10;sync-status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="380" y="160" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Auth Filter -->
+        <mxCell id="authf" value="RbacFilter&#10;[Component: Middleware]&#10;&#10;Valida JWT e garante role&#10;RH ou ADMIN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="680" y="160" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Service -->
+        <mxCell id="svc" value="PreventionControlService&#10;[Component: Service]&#10;&#10;Aplica regras de escopo,&#10;versionamento e estado&#10;(OK/STALE/PENDING)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="380" y="320" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="empsvc" value="EmployeeSearchService&#10;[Component: Service]&#10;&#10;Filtro por nome/CPF&#10;com paginação" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="680" y="320" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dlsvc" value="DocumentDownloadService&#10;[Component: Service]&#10;&#10;Valida permissão, registra&#10;auditoria, faz streaming do&#10;binário via infra-service-client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="980" y="320" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Repositories -->
+        <mxCell id="docrepo" value="DocumentRepository&#10;[Component: Repository]&#10;&#10;Acesso Oracle - metadados&#10;dos documentos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="380" y="490" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="emprepo" value="EmployeeRepository&#10;[Component: Repository]&#10;&#10;Acesso Oracle - snapshot&#10;dos funcionários" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="680" y="490" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="audrepo" value="AuditRepository&#10;[Component: Repository]&#10;&#10;Grava DOC_AUDITORIA&#10;(LGPD)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#5D82A8;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="980" y="490" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Infra client -->
+        <mxCell id="infracli" value="careplus.infra-service-client&#10;[Component: Biblioteca]&#10;&#10;Wrapper GCS - leitura de&#10;binários PDF por object key" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#63BEF2;strokeColor=#3A8FC2;fontColor=#000000;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="980" y="660" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Externals -->
+        <mxCell id="oracle" value="Oracle Database&#10;[Container]" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="560" y="650" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="gcs" value="GCS Bucket&#10;[Container]" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="1280" y="660" width="160" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="c1" style="endArrow=classic;html=1" edge="1" parent="1" source="bff" target="authf"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c2" style="endArrow=classic;html=1" edge="1" parent="1" source="authf" target="ctrl"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c3" style="endArrow=classic;html=1" edge="1" parent="1" source="ctrl" target="svc"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c4" style="endArrow=classic;html=1" edge="1" parent="1" source="ctrl" target="empsvc"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c5" style="endArrow=classic;html=1" edge="1" parent="1" source="ctrl" target="dlsvc"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c6" style="endArrow=classic;html=1" edge="1" parent="1" source="svc" target="docrepo"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c7" style="endArrow=classic;html=1" edge="1" parent="1" source="empsvc" target="emprepo"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c8" style="endArrow=classic;html=1" edge="1" parent="1" source="dlsvc" target="audrepo"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c9" style="endArrow=classic;html=1" edge="1" parent="1" source="dlsvc" target="infracli"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c10" style="endArrow=classic;html=1" edge="1" parent="1" source="docrepo" target="oracle"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c11" style="endArrow=classic;html=1" edge="1" parent="1" source="emprepo" target="oracle"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c12" style="endArrow=classic;html=1" edge="1" parent="1" source="audrepo" target="oracle"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="c13" style="endArrow=classic;html=1" edge="1" parent="1" source="infracli" target="gcs"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

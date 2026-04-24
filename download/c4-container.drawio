@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" modified="2026-04-13T00:00:00.000Z" agent="Claude" version="24.0.0">
+  <diagram id="c4-container" name="C4 - Container Diagram">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="C4 - Container Diagram&#xa;SD #248562 - Consulta Documentacao Tecnica (Programa de Prevencao e Controle)" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="1100" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="user" value="Usuario RH / Administrador&#xa;[Pessoa]&#xa;&#xa;Consulta e baixa documentos&#xa;tecnicos de SST" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#073B6F;fontColor=#FFFFFF;fontSize=12;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="180" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ui" value="Portal Ocupacional UI&#xa;[Container: React + TypeScript]&#xa;&#xa;SPA servindo o perfil RH/Admin.&#xa;Cards Empresa/Funcionario, listas,&#xa;visualizar e download." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="360" y="130" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bff" value="API BFF&#xa;[Container: Microservice / GCP Cloud Run]&#xa;&#xa;Autenticacao JWT, RBAC (RH/Admin),&#xa;agregacao de chamadas, formatacao&#xa;da resposta para UI." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="700" y="130" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="core" value="API Core&#xa;[Container: Microservice / GCP Cloud Run]&#xa;&#xa;Regras de dominio: versionamento,&#xa;escopo, filtros. Acessa Oracle e&#xa;careplus.infra-service-client." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="1040" y="130" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="worker" value="Worker Sync SOC&#xa;[Container: Cloud Scheduler + Cloud Run Job]&#xa;&#xa;Executa 1x/dia em janela noturna.&#xa;Le SOC, persiste metadados no&#xa;Oracle e binarios no GCS." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="700" y="450" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="infracli" value="careplus.infra-service-client&#xa;[Biblioteca interna]&#xa;&#xa;Abstracao para acesso ao GCP/GCS.&#xa;Usada por Core e Worker.&#xa;Sem URL assinada." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#63BEF2;strokeColor=#3A8FC2;fontColor=#000000;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="1040" y="450" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="oracle" value="Oracle Database&#xa;[GCP]&#xa;&#xa;Metadados dos documentos,&#xa;funcionarios, jobs de sync,&#xa;auditoria LGPD." style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="1380" y="130" width="200" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="gcs" value="GCS Bucket&#xa;[Google Cloud Storage]&#xa;&#xa;Armazena binarios PDF dos&#xa;documentos sincronizados.&#xa;Retencao indefinida." style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#1168BD;strokeColor=#0D5AA7;fontColor=#FFFFFF;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="1380" y="450" width="200" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="soc" value="SOC (GED)&#xa;[Sistema Externo - WebService]&#xa;&#xa;Fonte unica dos documentos&#xa;de SST. Consumido apenas&#xa;pelo Worker." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6c6c6c;fontColor=#FFFFFF;fontSize=12;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="450" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="Usa [HTTPS]" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="user" target="ui">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="REST/JSON&#xa;JWT + X-Company-ID" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="ui" target="bff">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="REST/JSON" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="bff" target="core">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="SQL" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="core" target="oracle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="Usa" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="core" target="infracli">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="Le/Grava objetos" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="infracli" target="gcs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="SOAP/REST (diario)" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="worker" target="soc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="Usa" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="worker" target="infracli">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="Persiste metadados" style="endArrow=classic;html=1;fontSize=10" edge="1" parent="1" source="worker" target="oracle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

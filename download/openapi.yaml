@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: Portal Ocupacional BFF - Programa de Prevenção e Controle
+  version: 1.0.0
+  description: |
+    API BFF para consulta de documentação técnica (SD #248562).
+    Todos os endpoints exigem autenticação JWT + header X-Company-ID.
+    Acesso restrito às roles RH e ADMINISTRADOR.
+servers:
+  - url: https://bff.portal-ocupacional.gcp.careplus/api/v1
+security:
+  - bearerAuth: []
+  - companyHeader: []
+paths:
+  /prevention-control/categories:
+    get:
+      summary: Retorna as duas categorias de entrada (Empresa / Funcionário)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryListResponse'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /prevention-control/company/documents:
+    get:
+      summary: Lista documentos de escopo Empresa
+      parameters:
+        - name: tipo
+          in: query
+          required: false
+          schema: { type: string }
+          description: Código do tipo (ex. PGR, LTCAT). Se omitido, retorna todos.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentListResponse'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /prevention-control/employees:
+    get:
+      summary: Lista funcionários com filtro por nome ou CPF
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema: { type: string }
+          description: Termo de busca (nome parcial ou CPF). Se vazio, retorna todos.
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: pageSize
+          in: query
+          schema: { type: integer, default: 50 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeListResponse'
+
+  /prevention-control/employees/{cpf}/documents:
+    get:
+      summary: Lista documentos nominais de um funcionário
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentListResponse'
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /prevention-control/documents/{id}/versions:
+    get:
+      summary: Histórico completo de versões de um documento (mais recente → mais antigo)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentListResponse'
+
+  /prevention-control/documents/{id}/download:
+    get:
+      summary: Download do PDF (stream via careplus.infra-service-client)
+      description: |
+        O BFF solicita ao Core, que usa o componente **careplus.infra-service-client**
+        para ler o objeto no GCS e retorna o binário via stream. Não há URL assinada.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: Binário PDF
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: Documento ainda não sincronizado (SYNC_STATUS = PENDING/STALE)
+
+  /prevention-control/sync-status:
+    get:
+      summary: Status da última sincronização com o SOC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatusResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    companyHeader:
+      type: apiKey
+      in: header
+      name: X-Company-ID
+  responses:
+    Unauthorized:
+      description: Token ausente ou inválido
+    Forbidden:
+      description: Perfil sem permissão (apenas RH / ADMINISTRADOR)
+    NotFound:
+      description: Recurso não encontrado
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        Success: { type: boolean }
+        Message: { type: string }
+        Error: { type: string, nullable: true }
+
+    CategoryListResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Data:
+              type: array
+              items:
+                type: object
+                properties:
+                  Code: { type: string, enum: [EMPRESA, FUNCIONARIO] }
+                  Label: { type: string }
+                  Icon: { type: string }
+
+    Document:
+      type: object
+      properties:
+        Id: { type: integer, format: int64 }
+        TipoCodigo: { type: string }
+        TipoDescricao: { type: string }
+        Escopo: { type: string, enum: [EMPRESA, FUNCIONARIO] }
+        Versao: { type: integer }
+        NomeArquivo: { type: string }
+        DataUpload: { type: string, format: date-time }
+        TamanhoBytes: { type: integer, format: int64 }
+        SyncStatus: { type: string, enum: [OK, STALE, PENDING] }
+        MensagemEstado:
+          type: string
+          nullable: true
+          description: |
+            Preenchido quando SYNC_STATUS != OK:
+            - "Não há documentos disponíveis para este tipo no momento"
+            - "⚠ Documento ainda não sincronizado"
+
+    DocumentListResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Data:
+              type: array
+              items: { $ref: '#/components/schemas/Document' }
+
+    Employee:
+      type: object
+      properties:
+        Cpf: { type: string }
+        Nome: { type: string }
+        Matricula: { type: string, nullable: true }
+        Cargo: { type: string, nullable: true }
+
+    EmployeeListResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Data:
+              type: array
+              items: { $ref: '#/components/schemas/Employee' }
+            Total: { type: integer }
+
+    SyncStatusResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Data:
+              type: object
+              properties:
+                UltimaSincronizacao: { type: string, format: date-time }
+                Status: { type: string, enum: [SUCCESS, FAILED, PARTIAL, RUNNING] }
+                TotalProcessados: { type: integer }
+                TotalFalhas: { type: integer }
