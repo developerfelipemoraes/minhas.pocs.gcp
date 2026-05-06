@@ -23,7 +23,7 @@
   details { margin: 8px 0; border: 1px solid #e0e0e0; border-radius: 4px; padding: 6px 10px; background: #fafafa; page-break-inside: avoid; }
   details summary { cursor: pointer; font-weight: 600; font-size: 9.5pt; color: #555; }
 </style></head><body>
-<h1>ADR - [US-248562] - [Consulta de Documentação Técnica — Programa de Prevenção e Controle (P.Ocup)] - Solução de Arquitetura</h1>
+<h1>ADR - [US-248562] - [Integração SOC - Download de Arquivos ] - Solução de Arquitetura</h1>
 <h2>Arquivo de Decisão de Arquitetura (ADR)</h2>
 <h3>Título: Consulta de Documentação Técnica — Programa de Prevenção e Controle no Portal Ocupacional</h3>
 <p><strong>Data</strong>: 2026-05-05
@@ -66,7 +66,7 @@
 </ul>
 <h3>Opções Consideradas</h3>
 <ol>
-<li>Sincronização diária via Worker (escolhida):** Worker em background lê o SOC uma vez por dia, persiste metadados no Oracle e binários no GCS via <code>careplus.infra-service-client</code>. Portal consulta apenas o cache local.</li>
+<li>Sincronização diária via Worker (definir horário de execução):** Worker em background lê o SOC uma vez por dia, persiste metadados no Oracle e binários no GCS via <code>careplus.infra-service-client</code>. Portal consulta apenas o cache local.</li>
 <li>Download de arquivo existente no GCS:**  download direto pelo browser.</li>
 </ol>
 <h2>Decisão</h2>
@@ -400,6 +400,7 @@
 <td>Log LGPD de acessos (<code>VISUALIZAR</code> / <code>DOWNLOAD</code>).</td>
 </tr>
 </tbody></table>
+<p>Obs: TB_CADASTROFUNCIONARIOFOL_OCUP e TB_CADASTROEMPRESA_OCUP estao apenas representadas com os dados que iremos utilizar</p>
 <h4>Decisões de Modelagem</h4>
 <ul>
 <li><strong>Chave única por versão:</strong> <code>(EMPRESA_ID, TIPO_DOC_ID, FUNCIONARIO_ID, VERSAO, ESCOPO_REGISTRO)</code> — garante histórico imutável, sem sobrescrita.</li>
@@ -420,16 +421,9 @@
 <p>DDL completo em <a href="./schema.sql"><code>schema.sql</code></a>. Diagrama ER editável em <a href="./er-diagram-adr.drawio"><code>er-diagram-adr.drawio</code></a>.</p>
 <h2>Consequências</h2>
 <h3>Prós</h3>
-<h4>Proxy Apigee:</h4>
-<ul>
-<li>Autenticação JWT centralizada e validação de <code>X-Company-ID</code> antes de chegar ao BFF.</li>
-<li>Observabilidade nativa (latência, erros, throttling) sem instrumentação adicional.</li>
-<li>Bloqueio de origem por CORS evitando consumo direto não autorizado.</li>
-</ul>
 <h4>API BFF e API Core:</h4>
 <ul>
 <li>Controle centralizado das transações de listagem, filtro, versionamento e download.</li>
-<li>RBAC validado em três camadas (Apigee, BFF, Core) — funcionalidade oculta do menu para perfis não autorizados.</li>
 <li>Stream de download via Core garante auditoria fina (cada byte servido é registrado em <code>TB_DOC_AUDITORIA</code>) sem expor URL assinada.</li>
 <li>Stateless e escaláveis horizontalmente em Cloud Run / GKE.</li>
 </ul>
@@ -441,38 +435,21 @@
 <h4>Worker Care Plus:</h4>
 <ul>
 <li><strong>Disponibilidade do Portal independente do SOC</strong> (99,5% mesmo com SOC fora do ar) — degradação graciosa via <code>SYNC_STATUS = STALE</code>.</li>
-<li>Job noturno consome janela de baixo uso, sem impactar latência de runtime.</li>
-<li>Tolerância a falhas via retry exponencial + circuit breaker no <code>careplus.infra-service-client</code>.</li>
-<li><code>TB_DOC_SYNC_JOB</code> dá observabilidade completa do batch (totais, erros, duração).</li>
 </ul>
 <h4>Database (Repositórios):</h4>
 <ul>
-<li>Histórico imutável atende requisito regulatório de SST e LGPD.</li>
 <li>Separação metadados (Oracle) / binários (GCS) reduz custo de storage e habilita retenção indefinida no GCS.</li>
-<li>Índices dedicados garantem listagem &lt; 2s para 500 documentos e filtro por nome/CPF performático.</li>
 <li>Auditoria LGPD nativa em <code>TB_DOC_AUDITORIA</code>.</li>
 </ul>
 <h3>Contras</h3>
-<h4>API BFF e API Core:</h4>
-<ul>
-<li>Complexidade na implementação do RBAC em três camadas — exige testes integrados específicos.</li>
-<li>Stream de download mantém conexão aberta no Core (custo de conexão concorrente em horário de pico).</li>
-</ul>
-<h4>Disponibilização de Endpoints pela API BFF:</h4>
-<ul>
-<li>Segurança e controle de acesso devem ser rigorosamente gerenciados — qualquer falha no RBAC expõe documentos sensíveis.</li>
-<li>Multi-tenancy via header (<code>X-Company-ID</code>) exige validação cuidadosa para evitar IDOR (Insecure Direct Object Reference).</li>
-</ul>
 <h4>Worker Care Plus:</h4>
 <ul>
 <li>Dependência de agendamento diário — documentos novos do SOC só ficam disponíveis no dia seguinte (latência aceitável pelo PO).</li>
-<li>Mapeamento <code>codigoGed</code> (pendente) é bloqueador para go-live — sem ele o Worker não consegue requisitar os documentos corretos.</li>
 <li>SOAP/MTOM exige bibliotecas específicas e tratamento de Base64 com gerenciamento de memória cuidadoso (binários grandes).</li>
 </ul>
 <h4>Database (Repositórios):</h4>
 <ul>
 <li>Crescimento contínuo (histórico imutável) exige plano de particionamento ou archiving de longo prazo.</li>
-<li>Bucket GCS com retenção indefinida implica custo crescente — avaliar política de classes de storage (Standard → Nearline → Coldline) por idade do documento.</li>
 <li>Sincronização entre <code>TB_DOC_PREV_CONTROLE</code> (Oracle) e GCS é eventual — falha entre o INSERT e o PUT pode deixar metadado órfão (mitigado por <code>TB_DOC_SYNC_JOB</code> + reconciliação).</li>
 </ul>
 <h2>Padrões de Arquitetura de Referência</h2>
@@ -522,9 +499,9 @@
 <td align="left">0.0.1</td>
 </tr>
 <tr>
+<td align="left">s</td>
 <td align="left"><a href="https://app02.careplus.com.br/carepluslab/stream/video?view=c3eb7b57-5a2c-4b24-bc6c-0a947c836d57">Arquitetura Limpa - Commands</a></td>
 <td align="left">Vídeo</td>
-<td align="left">0.0.1</td>
 </tr>
 <tr>
 <td align="left"><a href="https://app02.careplus.com.br/carepluslab/stream/video?view=adfc6e6a-7a9b-46ec-b13c-63eb73447fd3">Arquitetura Limpa - Get - EFF e Dapper</a></td>

@@ -1,4 +1,4 @@
-# ADR - [US-248562] - [Consulta de Documentação Técnica — Programa de Prevenção e Controle (P.Ocup)] - Solução de Arquitetura
+# ADR - [US-248562] - [Integração SOC - Download de Arquivos ] - Solução de Arquitetura
 
 ## Arquivo de Decisão de Arquitetura (ADR)
 
@@ -35,7 +35,7 @@ O **SOC** é a fonte única de verdade desses documentos (GED), porém:
 
 ### Opções Consideradas
 
-1)  Sincronização diária via Worker (escolhida):** Worker em background lê o SOC uma vez por dia, persiste metadados no Oracle e binários no GCS via `careplus.infra-service-client`. Portal consulta apenas o cache local.
+1)  Sincronização diária via Worker (definir horário de execução):** Worker em background lê o SOC uma vez por dia, persiste metadados no Oracle e binários no GCS via `careplus.infra-service-client`. Portal consulta apenas o cache local.
 2) Download de arquivo existente no GCS:**  download direto pelo browser.
 
 ## Decisão
@@ -281,6 +281,8 @@ erDiagram
 | `TB_DOC_SYNC_JOB` | Nova | Controle de execução do Worker (status, totais, erros). |
 | `TB_DOC_AUDITORIA` | Nova | Log LGPD de acessos (`VISUALIZAR` / `DOWNLOAD`). |
 
+Obs: TB_CADASTROFUNCIONARIOFOL_OCUP e TB_CADASTROEMPRESA_OCUP estao apenas representadas com os dados que iremos utilizar
+
 #### Decisões de Modelagem
 
 - **Chave única por versão:** `(EMPRESA_ID, TIPO_DOC_ID, FUNCIONARIO_ID, VERSAO, ESCOPO_REGISTRO)` — garante histórico imutável, sem sobrescrita.
@@ -303,16 +305,9 @@ DDL completo em [`schema.sql`](./schema.sql). Diagrama ER editável em [`er-diag
 
 ### Prós
 
-#### Proxy Apigee:
-
-- Autenticação JWT centralizada e validação de `X-Company-ID` antes de chegar ao BFF.
-- Observabilidade nativa (latência, erros, throttling) sem instrumentação adicional.
-- Bloqueio de origem por CORS evitando consumo direto não autorizado.
-
 #### API BFF e API Core:
 
 - Controle centralizado das transações de listagem, filtro, versionamento e download.
-- RBAC validado em três camadas (Apigee, BFF, Core) — funcionalidade oculta do menu para perfis não autorizados.
 - Stream de download via Core garante auditoria fina (cada byte servido é registrado em `TB_DOC_AUDITORIA`) sem expor URL assinada.
 - Stateless e escaláveis horizontalmente em Cloud Run / GKE.
 
@@ -322,41 +317,22 @@ DDL completo em [`schema.sql`](./schema.sql). Diagrama ER editável em [`er-diag
 - Versionamento por path (`/api/v1/`) habilita evolução sem quebrar clientes.
 
 #### Worker Care Plus:
-
 - **Disponibilidade do Portal independente do SOC** (99,5% mesmo com SOC fora do ar) — degradação graciosa via `SYNC_STATUS = STALE`.
-- Job noturno consome janela de baixo uso, sem impactar latência de runtime.
-- Tolerância a falhas via retry exponencial + circuit breaker no `careplus.infra-service-client`.
-- `TB_DOC_SYNC_JOB` dá observabilidade completa do batch (totais, erros, duração).
+
 
 #### Database (Repositórios):
-
-- Histórico imutável atende requisito regulatório de SST e LGPD.
 - Separação metadados (Oracle) / binários (GCS) reduz custo de storage e habilita retenção indefinida no GCS.
-- Índices dedicados garantem listagem < 2s para 500 documentos e filtro por nome/CPF performático.
 - Auditoria LGPD nativa em `TB_DOC_AUDITORIA`.
 
 ### Contras
 
-#### API BFF e API Core:
-
-- Complexidade na implementação do RBAC em três camadas — exige testes integrados específicos.
-- Stream de download mantém conexão aberta no Core (custo de conexão concorrente em horário de pico).
-
-#### Disponibilização de Endpoints pela API BFF:
-
-- Segurança e controle de acesso devem ser rigorosamente gerenciados — qualquer falha no RBAC expõe documentos sensíveis.
-- Multi-tenancy via header (`X-Company-ID`) exige validação cuidadosa para evitar IDOR (Insecure Direct Object Reference).
-
 #### Worker Care Plus:
 
 - Dependência de agendamento diário — documentos novos do SOC só ficam disponíveis no dia seguinte (latência aceitável pelo PO).
-- Mapeamento `codigoGed` (pendente) é bloqueador para go-live — sem ele o Worker não consegue requisitar os documentos corretos.
 - SOAP/MTOM exige bibliotecas específicas e tratamento de Base64 com gerenciamento de memória cuidadoso (binários grandes).
 
 #### Database (Repositórios):
-
 - Crescimento contínuo (histórico imutável) exige plano de particionamento ou archiving de longo prazo.
-- Bucket GCS com retenção indefinida implica custo crescente — avaliar política de classes de storage (Standard → Nearline → Coldline) por idade do documento.
 - Sincronização entre `TB_DOC_PREV_CONTROLE` (Oracle) e GCS é eventual — falha entre o INSERT e o PUT pode deixar metadado órfão (mitigado por `TB_DOC_SYNC_JOB` + reconciliação).
 
 ## Padrões de Arquitetura de Referência
@@ -377,6 +353,6 @@ A Trilha Desenvolvimento da **CarePlus** permitem que você possa **ACELERE O DE
 | Arquitetura                                                  | Tipo  | Versão |
 | :----------------------------------------------------------- | :---- | :----- |
 | [Arquitetura Limpa (Clean Architecture)](https://app02.careplus.com.br/carepluslab/stream/video?view=286f0daf-1c8f-49bc-885e-cb100fd02bc0) | Vídeo | 0.0.1  |
-| [Arquitetura Limpa - Commands](https://app02.careplus.com.br/carepluslab/stream/video?view=c3eb7b57-5a2c-4b24-bc6c-0a947c836d57) | Vídeo | 0.0.1  |
+s| [Arquitetura Limpa - Commands](https://app02.careplus.com.br/carepluslab/stream/video?view=c3eb7b57-5a2c-4b24-bc6c-0a947c836d57) | Vídeo | 0.0.1  |
 | [Arquitetura Limpa - Get - EFF e Dapper](https://app02.careplus.com.br/carepluslab/stream/video?view=adfc6e6a-7a9b-46ec-b13c-63eb73447fd3) | Vídeo | 0.0.1  |
 | [Treinamento testes unitários](https://app02.careplus.com.br/carepluslab/stream/video?view=b221cad0-6e64-4458-97ee-508b81f8fc30) | Vídeo | 0.0.1  |
