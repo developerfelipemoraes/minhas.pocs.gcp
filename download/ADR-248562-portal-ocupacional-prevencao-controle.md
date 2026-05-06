@@ -40,7 +40,7 @@ O **SOC** é a fonte única de verdade desses documentos (GED), porém:
 
 ## Decisão
 
-Adotaremos a **sincronização diária via Worker**, com download em **stream servido pelo Core** via `careplus.infra-service-client` (sem URL assinada). Esta decisão garante disponibilidade independente do SOC (degradação graciosa), auditoria completa, controle de versão imutável e atende aos RNFs de performance (< 2s para listagem, < 3s para início do download). O mapeamento dos `codigoGed` SOC para os 17 tipos em `TB_DOC_TIPO.CODIGO_GED` é **pendência crítica** a ser fornecida pelo time de integração antes da implementação do Worker.
+Adotaremos a **sincronização diária via Worker**, com download em **stream servido pelo Core** via `careplus.infra-service-client` (sem URL assinada). Esta decisão garante disponibilidade independente do SOC.
 
 ### Tela consumidora — Portal Ocupacional UI
 
@@ -175,14 +175,13 @@ A implementação utiliza HTTPS + REST/JSON para todas as chamadas entre UI ↔ 
   | `GET` | `/api/v1/prevention-control/documents/{id}/download` | Stream PDF |
   | `GET` | `/api/v1/prevention-control/sync-status` | Status última sincronização |
 
-- A **API Core** centraliza o domínio: versionamento (chave única `(EMPRESA_ID, TIPO_DOC_ID, FUNCIONARIO_CPF, VERSAO, ESCOPO_REGISTRO)`), busca, filtros e orquestração do download via `careplus.infra-service-client`. Todos os endpoints exigem `Authorization: Bearer <JWT>` + `X-Company-ID` e validam role.
+- A **API Core** centraliza o domínio: versionamento (chave única `(EMPRESA_ID, TIPO_DOC_ID, FUNCIONARIO_ID, VERSAO, ESCOPO_REGISTRO)`), busca, filtros e orquestração do download via `careplus.infra-service-client`. Todos os endpoints exigem `Authorization: Bearer <JWT>` + `X-Company-ID` e validam role.
 
 - Contratos OpenAPI completos em [`openapi.yaml`](./openapi.yaml).
 
 ### Worker Care Plus
 
 - **Nome do worker:** `Worker.PortalOcupacional.SyncSOC`
-- **Git:** `careplus/portal-ocupacional/worker-sync-soc` (configuração enviada via e-mail pelo time de DevOps)
 - **Agendamento:**  Job diariamente em horário a ser definido pela equipe de negócios.
 - **Fluxo:**
   
@@ -209,7 +208,8 @@ A persistência é dividida entre **Oracle (metadados)** e **GCS (binários)**. 
 ```mermaid
 erDiagram
     TB_DOC_TIPO ||--o{ TB_DOC_PREV_CONTROLE : "classifica"
-    TB_DOC_FUNCIONARIO ||--o{ TB_DOC_PREV_CONTROLE : "vincula (CPF, nullable)"
+    TB_CADASTROFUNCIONARIOFOL_OCUP ||--o{ TB_DOC_PREV_CONTROLE : "vincula (FUNCIONARIO_ID, nullable)"
+    TB_CADASTROEMPRESA_OCUP ||--o{ TB_DOC_PREV_CONTROLE : "pertence"
     TB_DOC_PREV_CONTROLE ||--o{ TB_DOC_AUDITORIA : "auditado por"
     TB_DOC_SYNC_JOB ||--o{ TB_DOC_PREV_CONTROLE : "sincronizou"
 
@@ -224,9 +224,9 @@ erDiagram
 
     TB_DOC_PREV_CONTROLE {
         NUMBER ID PK
-        NUMBER EMPRESA_ID "tenant"
+        NUMBER EMPRESA_ID FK
         NUMBER TIPO_DOC_ID FK
-        VARCHAR2 FUNCIONARIO_CPF FK "nullable - escopo Empresa"
+        NUMBER FUNCIONARIO_ID FK "nullable - escopo Empresa"
         NUMBER VERSAO
         VARCHAR2 ESCOPO_REGISTRO "EMPRESA | FUNCIONARIO"
         VARCHAR2 GCS_BUCKET
@@ -237,12 +237,14 @@ erDiagram
         NUMBER SYNC_JOB_ID FK
     }
 
-    TB_DOC_FUNCIONARIO {
-        VARCHAR2 CPF PK
+    TB_CADASTROFUNCIONARIOFOL_OCUP {
+        NUMBER FUNCIONARIO_ID PK "EXISTENTE - não criar"
         NUMBER EMPRESA_ID
-        VARCHAR2 NOME
-        VARCHAR2 MATRICULA
-        TIMESTAMP DT_ATUALIZACAO
+        VARCHAR2 CPF
+    }
+
+    TB_CADASTROEMPRESA_OCUP {
+        NUMBER EMPRESA_ID PK "EXISTENTE - não criar"
     }
 
     TB_DOC_SYNC_JOB {
@@ -274,67 +276,28 @@ erDiagram
 |---|---|---|
 | `TB_DOC_TIPO` | Nova | Catálogo dos 17 tipos com escopo (`EMPRESA` / `FUNCIONARIO` / `AMBOS`) e `CODIGO_GED` (pendente). |
 | `TB_DOC_PREV_CONTROLE` | Nova | Metadados dos documentos sincronizados; referência ao binário no GCS. |
-| `TB_DOC_FUNCIONARIO` | Nova | Snapshot dos funcionários para filtro por nome/CPF. |
+| `TB_CADASTROFUNCIONARIOFOL_OCUP` | **Existente** | Cadastro de funcionários do Portal Ocupacional — reaproveitada como FK (`FUNCIONARIO_ID`) em `TB_DOC_PREV_CONTROLE`. **Não criar.** |
+| `TB_CADASTROEMPRESA_OCUP` | **Existente** | Cadastro de empresas clientes do Portal Ocupacional — reaproveitada como FK (`EMPRESA_ID`) em `TB_DOC_PREV_CONTROLE`. **Não criar.** |
 | `TB_DOC_SYNC_JOB` | Nova | Controle de execução do Worker (status, totais, erros). |
 | `TB_DOC_AUDITORIA` | Nova | Log LGPD de acessos (`VISUALIZAR` / `DOWNLOAD`). |
 
 #### Decisões de Modelagem
 
-- **Chave única por versão:** `(EMPRESA_ID, TIPO_DOC_ID, FUNCIONARIO_CPF, VERSAO, ESCOPO_REGISTRO)` — garante histórico imutável, sem sobrescrita.
-- **`FUNCIONARIO_CPF` nullable** — `NULL` para documentos de escopo Empresa; preenchido para Funcionário; tipos "Ambos" geram **dois registros distintos** (um corporativo, um nominal).
+- **Chave única por versão:** `(EMPRESA_ID, TIPO_DOC_ID, FUNCIONARIO_ID, VERSAO, ESCOPO_REGISTRO)` — garante histórico imutável, sem sobrescrita.
+- **`FUNCIONARIO_ID` nullable** — `NULL` para documentos de escopo Empresa; preenchido para Funcionário; tipos "Ambos" geram **dois registros distintos** (um corporativo, um nominal).
+- **Reaproveitamento de tabelas existentes** — `TB_CADASTROFUNCIONARIOFOL_OCUP` e `TB_CADASTROEMPRESA_OCUP` já existem no Oracle do Portal Ocupacional; são referenciadas como FK em `TB_DOC_PREV_CONTROLE` e **não devem ser duplicadas**. O filtro por nome/CPF na UI reutiliza a estrutura existente (JOIN em `FUNCIONARIO_ID`).
 - **`SYNC_STATUS` com três estados:** `OK | STALE | PENDING` — dirige diretamente as mensagens de UI ("⚠ Documento ainda não sincronizado", "Não há documentos disponíveis").
 - **Binários fora do Oracle:** apenas `GCS_OBJECT_KEY` + `GCS_BUCKET`. Reduz custo de storage Oracle, simplifica backup e habilita retenção indefinida no GCS.
-- **Índices:**
+- **Índices (somente nas tabelas novas):**
   - `IX_DOC_PREV_DT_UPLOAD` em `TB_DOC_PREV_CONTROLE(DT_UPLOAD_SOC DESC)` — ordenação do mais recente ao mais antigo
   - `IX_DOC_PREV_TENANT_TIPO` em `TB_DOC_PREV_CONTROLE(EMPRESA_ID, TIPO_DOC_ID)`
-  - `IX_DOC_FUNC_NOME` em `TB_DOC_FUNCIONARIO(EMPRESA_ID, NOME)` — filtro por nome
+  - `IX_DOC_PREV_FUNCIONARIO` em `TB_DOC_PREV_CONTROLE(FUNCIONARIO_ID)` — drill-down por funcionário
   - `IX_DOC_AUD_DT` em `TB_DOC_AUDITORIA(DT_ACAO DESC)` — relatórios LGPD
 - **Retenção:** histórico **completo e imutável**; nenhum documento é sobrescrito ou deletado.
 
-#### Sequência — Sincronização Worker (Batch Diário)
-
-![Sequence Worker Sync](./sequence-worker.png)
-
-> Fonte editável: [`sequence-worker.drawio`](./sequence-worker.drawio)
-
-<details>
-<summary>Versão Mermaid (alternativa textual)</summary>
-
-```mermaid
-sequenceDiagram
-    participant CS as Cloud Scheduler
-    participant W as Worker Sync
-    participant SOC as SOC (SOAP/MTOM)
-    participant Infra as careplus.infra-service-client
-    participant GCS as GCS Bucket
-    participant DB as Oracle
-
-    CS->>W: trigger diário (cron noturno)
-    W->>DB: cria TB_DOC_SYNC_JOB (STATUS=RUNNING)
-    loop para cada (empresa, tipo) pendente
-        W->>SOC: downloadArquivosPorGed (codigoGed, codigoEmpresa)
-        alt SOC-100 (sucesso)
-            SOC-->>W: MTOM/XOP (Base64)
-            W->>W: Base64 → byte[]
-            W->>Infra: upload(byte[])
-            Infra->>GCS: PUT object
-            GCS-->>Infra: object key
-            Infra-->>W: GCS_OBJECT_KEY
-            W->>DB: INSERT TB_DOC_PREV_CONTROLE (SYNC_STATUS=OK)
-        else falha / numeroErros>0
-            W->>DB: marca SYNC_STATUS=STALE; mantém última versão válida
-            W->>W: registra erro em TB_DOC_SYNC_JOB
-        end
-    end
-    W->>DB: atualiza TB_DOC_SYNC_JOB (STATUS=OK|PARTIAL|FAIL)
-    W-->>CS: exit code
-```
-
-</details>
-
 #### DDL
 
-DDL completo em [`schema.sql`](./schema.sql). Diagrama ER editável em [`er-diagram.drawio`](./er-diagram.drawio).
+DDL completo em [`schema.sql`](./schema.sql). Diagrama ER editável em [`er-diagram-adr.drawio`](./er-diagram-adr.drawio).
 
 ## Consequências
 
